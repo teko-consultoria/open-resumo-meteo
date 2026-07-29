@@ -1,0 +1,36 @@
+Data do boletim: {{issue_date}}
+Fechamento: {{issue_time}} {{timezone}}
+ID auditável do pacote: {{packet_id}}
+Versão do schema: {{schema_version}}
+Janela solicitada: {{window_id}}
+
+Escreva somente a seção desta janela.
+
+CABEÇALHO OBRIGATÓRIO
+{{expected_heading}}
+
+VALORES_AUTORIZADOS
+{{authorized_basin_accumulations}}
+
+REGRAS DE EXECUÇÃO
+- Entregue exatamente o cabeçalho e um parágrafo em linha única.
+- Papel desta seção: {{section_role}}.
+- Explique a cadeia entre mecanismo, evolução temporal, efeitos meteorológicos e chuva por bacia quando houver evidência.
+- Para chuva quantificada, use somente `rounded_mm` de VALORES_AUTORIZADOS e associe cada número à mesma bacia e janela.
+- Escreva inteiros sem casa decimal e use o padrão `45 mm no Jacuí; 30 mm no Uruguai; 0 mm no Iguaçu`.
+- Ao citar acumulados, copie o trecho abaixo sem mudar números, bacias ou associações; pode omitir itens apenas se a frase ficar excessivamente longa.
+
+TRECHO_DE_ACUMULADOS_VALIDADO
+{{authorized_rain_literal}}
+
+- As seções anteriores abaixo servem apenas para evitar repetição de abertura, conectivos e frase de confiança. Não copie sua redação nem derive fatos delas.
+
+ESTILO_JÁ_USADO
+{{prior_sections}}
+- Não converta classes qualitativas do brief em números.
+- Citações qualitativas de GFS, GEFS, EC e ECENS são permitidas apenas conforme `model_contrast` e `model_views`.
+- Nunca escreva `confiança mista`. Se `confidence_summary.reason` for `model_dispersion`, prefira `a confiança é moderada devido à dispersão entre modelos` e use `model_contrasts` para identificar, quando presente, a solução mais seca e a mais úmida sem atribuir valores em mm aos modelos. Cite os nomes exatos de `driest_model` e `wettest_model`; não use grupos vagos como `sistemas europeus`.
+- Não cite fontes, rodadas, provedores ou metadados.
+
+BRIEF_JSON
+{{editorial_packet_json}}

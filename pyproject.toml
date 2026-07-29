@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-resumo-meteo"
+version = "0.1.0"
+description = "Pipeline aberto de resumo meteorologico diario do Brasil para o setor eletrico"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [{ name = "Open Resumo Meteo contributors" }]
+keywords = ["weather", "meteorology", "brazil", "energy", "forecast"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+dependencies = [
+  "eccodes==1.7.1",
+  "h5py>=3.11,<4.0",
+  "numpy>=2.0,<3.0",
+  "openai>=2.20,<3.0",
+  "pydantic>=2.11,<3.0",
+  "python-dotenv>=1.0,<2.0",
+  "requests>=2.31,<3.0",
+  "SQLAlchemy>=2.0,<3.0",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.2,<4.0"]
+dev = [
+  "pytest>=8.3,<9.0",
+  "pytest-cov>=6.0,<7.0",
+  "ruff>=0.9,<1.0",
+]
+
+[project.scripts]
+resumo-meteo = "resumo_meteo.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+resumo_meteo = [
+  "core/config/*.json",
+  "core/data/**/*",
+  "core/prompts/**/*",
+  "core/schemas/*.json",
+  "core/assets/**/*.geojson",
+  "core/assets/**/*.json",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "B905", "UP042"]

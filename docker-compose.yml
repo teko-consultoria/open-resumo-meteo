@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: resumo_meteo
+      POSTGRES_USER: resumo_meteo
+      POSTGRES_PASSWORD: resumo_meteo_local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U resumo_meteo"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - resumo_meteo_postgres:/var/lib/postgresql/data
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      RESUMO_METEO_DATABASE_URL: postgresql+psycopg://resumo_meteo:resumo_meteo_local@postgres:5432/resumo_meteo
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./var:/app/var
+    command: ["doctor", "--json"]
+
+volumes:
+  resumo_meteo_postgres:

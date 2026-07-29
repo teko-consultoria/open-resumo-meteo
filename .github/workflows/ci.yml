@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ecCodes
+        run: sudo apt-get update && sudo apt-get install --yes libeccodes0 libeccodes-data
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install Python and dependencies
+        run: uv sync --python 3.12 --extra dev --extra postgres --locked
+
+      - name: Lint
+        run: uv run ruff check src tests scripts
+
+      - name: Test
+        run: uv run pytest -q
+
+      - name: Validate static assets and CLI
+        env:
+          WEATHER_SUMMARY_LLM_API_KEY: ci-placeholder
+          NASA_EARTHDATA_TOKEN: ci-placeholder
+        run: uv run resumo-meteo doctor --skip-database --json
+
+      - name: Build distribution
+        run: uv build
+
+      - name: Build and validate container
+        run: |
+          docker build --tag open-resumo-meteo:ci .
+          docker run --rm \
+            --env WEATHER_SUMMARY_LLM_API_KEY=ci-placeholder \
+            --env NASA_EARTHDATA_TOKEN=ci-placeholder \
+            open-resumo-meteo:ci doctor --skip-database --json

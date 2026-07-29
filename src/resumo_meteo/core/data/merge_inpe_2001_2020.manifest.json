@@ -1,0 +1,88 @@
+{
+  "aggregation": {
+    "historical_area_unit": "km2",
+    "members": {
+      "grande": {
+        "alto_grande": 51595.955,
+        "baixo_grande": 87285.296
+      },
+      "iguacu": {
+        "iguacu": 67501.436
+      },
+      "jacui": {
+        "jacui": 13329.809
+      },
+      "madeira": {
+        "madeira": 1504947.42
+      },
+      "parana": {
+        "alto_parana": 103427.777,
+        "baixo_parana": 245383.497
+      },
+      "paranaiba": {
+        "alto_paranaiba": 94644.377,
+        "baixo_paranaiba": 76754.679
+      },
+      "paranapanema": {
+        "paranapanema": 100872.033
+      },
+      "sao_francisco": {
+        "alto_sao_francisco": 50694.663,
+        "baixo_sao_francisco": 131167.016,
+        "medio_sao_francisco": 448254.745
+      },
+      "tiete": {
+        "tiete": 62466.159
+      },
+      "tocantins": {
+        "alto_tocantins": 183178.325,
+        "araguaia": 324359.019,
+        "baixo_tocantins": 250487.158
+      },
+      "uruguai": {
+        "uruguai": 164690.296
+      },
+      "xingu": {
+        "xingu": 509991.452
+      }
+    },
+    "method": "daily_area_weighted_mean_of_historical_basin_series"
+  },
+  "asset_id": "merge-inpe-smap-aggregated-calendar-2001-2020-v2",
+  "basin_definition_version": "MERGE_DAILY_BASIN@historical-19-area-weighted-v2",
+  "bundle": {
+    "path": "data/merge_inpe_2001_2020.climatology.json",
+    "sha256": "93ec01b7d5291acc682866e5cba409f6b313350586b79fa22be4ffbdd67b5772",
+    "size_bytes": 2769368
+  },
+  "provider": "MERGE_INPE",
+  "reference_period": "2001-2020",
+  "schema_version": 2,
+  "source": {
+    "filename": "MERGE_Daily_basin_historical-062000-atual.csv",
+    "reference_day_count": 7305,
+    "sha256": "987ec12cd4911feef7285d10724e7b46d091ff677061928223335b12c5e44013",
+    "size_bytes": 939503
+  },
+  "source_mask_limitation": "A climatologia MERGE/INPE foi recomposta a partir das 19 séries históricas pré-agregadas: nas cinco bacias SMAP agregadas, usa média diária ponderada pela área das máscaras históricas. A previsão e os mapas usam exclusivamente os contornos SMAP revisados; as máscaras históricas não foram disponibilizadas.",
+  "source_product": "MERGE_DAILY_BASIN",
+  "validation": {
+    "basin_count": 12,
+    "basin_ids": [
+      "jacui",
+      "uruguai",
+      "iguacu",
+      "parana",
+      "paranapanema",
+      "tiete",
+      "grande",
+      "paranaiba",
+      "sao_francisco",
+      "tocantins",
+      "madeira",
+      "xingu"
+    ],
+    "calendar_windows_per_basin": 732,
+    "reference_value_count": 87660
+  }
+}

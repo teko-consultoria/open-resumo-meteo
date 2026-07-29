@@ -1,0 +1,28 @@
+{
+  "schema_version": "weather-summary-temperature-climatology.v1",
+  "climatology_id": "noaa-ncep-reanalysis-2m-monthly-1991-2020-regional-v1",
+  "source": {
+    "provider": "NOAA",
+    "dataset": "NCEP/NCAR Reanalysis 1",
+    "variable": "Long Term Mean Monthly Mean of Air Temperature at 2 m",
+    "period": "1991-2020",
+    "url": "https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Monthlies/surface_gauss/air.2m.mon.ltm.1991-2020.nc",
+    "retrieved_once_on": "2026-07-13",
+    "runtime_download": false,
+    "aggregation": "cosine-latitude weighted regional mean"
+  },
+  "monthly_region_mean_degc": {
+    "1": {"amazon_west": 22.39, "central_brazil": 23.59, "chaco": 25.03, "la_plata": 24.2, "northeast_brazil": 24.74, "south_atlantic": 21.67, "south_brazil": 22.84, "southeast_brazil": 23.26},
+    "2": {"amazon_west": 22.39, "central_brazil": 23.48, "chaco": 24.21, "la_plata": 23.28, "northeast_brazil": 24.52, "south_atlantic": 22.42, "south_brazil": 22.65, "southeast_brazil": 23.26},
+    "3": {"amazon_west": 22.37, "central_brazil": 23.44, "chaco": 23.28, "la_plata": 21.54, "northeast_brazil": 24.49, "south_atlantic": 21.98, "south_brazil": 21.72, "southeast_brazil": 22.94},
+    "4": {"amazon_west": 22.02, "central_brazil": 23.08, "chaco": 21.23, "la_plata": 18.18, "northeast_brazil": 24.36, "south_atlantic": 20.61, "south_brazil": 19.65, "southeast_brazil": 22.0},
+    "5": {"amazon_west": 21.33, "central_brazil": 22.34, "chaco": 18.21, "la_plata": 14.64, "northeast_brazil": 24.07, "south_atlantic": 18.7, "south_brazil": 16.68, "southeast_brazil": 20.35},
+    "6": {"amazon_west": 20.89, "central_brazil": 22.54, "chaco": 16.93, "la_plata": 12.03, "northeast_brazil": 23.74, "south_atlantic": 17.5, "south_brazil": 15.04, "southeast_brazil": 19.72},
+    "7": {"amazon_west": 20.85, "central_brazil": 23.36, "chaco": 16.63, "la_plata": 11.13, "northeast_brazil": 23.67, "south_atlantic": 16.64, "south_brazil": 14.39, "southeast_brazil": 19.61},
+    "8": {"amazon_west": 21.94, "central_brazil": 25.72, "chaco": 19.48, "la_plata": 13.27, "northeast_brazil": 24.56, "south_atlantic": 16.55, "south_brazil": 15.93, "southeast_brazil": 20.96},
+    "9": {"amazon_west": 22.62, "central_brazil": 26.95, "chaco": 22.06, "la_plata": 15.53, "northeast_brazil": 25.92, "south_atlantic": 16.63, "south_brazil": 17.5, "southeast_brazil": 22.59},
+    "10": {"amazon_west": 22.76, "central_brazil": 25.73, "chaco": 24.05, "la_plata": 18.47, "northeast_brazil": 26.37, "south_atlantic": 17.43, "south_brazil": 19.39, "southeast_brazil": 22.92},
+    "11": {"amazon_west": 22.59, "central_brazil": 24.11, "chaco": 24.27, "la_plata": 20.88, "northeast_brazil": 25.6, "south_atlantic": 18.5, "south_brazil": 20.52, "southeast_brazil": 22.25},
+    "12": {"amazon_west": 22.45, "central_brazil": 23.8, "chaco": 25.02, "la_plata": 23.26, "northeast_brazil": 25.2, "south_atlantic": 20.1, "south_brazil": 22.1, "southeast_brazil": 22.88}
+  }
+}

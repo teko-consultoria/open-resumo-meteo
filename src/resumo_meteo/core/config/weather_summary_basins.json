@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "scope_id": "weather-summary-merge-inpe-smap-aggregated-basins",
+  "scope_version": "2.0.0",
+  "description": "As 12 bacias do resumo meteorológico usam os contornos agregados SMAP revisados. A climatologia MERGE/INPE é mantida a partir das séries históricas disponíveis e, nas bacias agregadas, é recomposta por média espacial ponderada das sub-bacias históricas.",
+  "climatology_provider": "MERGE_INPE",
+  "basin_ids": [
+    "jacui",
+    "uruguai",
+    "iguacu",
+    "parana",
+    "paranapanema",
+    "tiete",
+    "grande",
+    "paranaiba",
+    "sao_francisco",
+    "tocantins",
+    "madeira",
+    "xingu"
+  ]
+}

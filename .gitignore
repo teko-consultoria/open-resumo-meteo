@@ -1,0 +1,29 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# Dados e produtos de runtime
+var/
+tmp/
+*.sqlite3
+*.db
+*.grib
+*.grib2
+*.h5
+*.hdf5
+*.nc
+
+# Fonte histórica usada apenas para gerar o snapshot de climatologia vendorizado.
+MERGE_Daily_basin_historical-062000-atual.csv

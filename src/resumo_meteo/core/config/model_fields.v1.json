@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "config_id": "open-resumo-meteo-fields",
+  "config_version": "1.0.0",
+  "cycle_utc": "00",
+  "domain": {
+    "crs": "EPSG:4326",
+    "longitude_min": -110.0,
+    "longitude_max": -20.0,
+    "latitude_min": -60.0,
+    "latitude_max": 15.0
+  },
+  "models": {
+    "gfs": {
+      "family": "ncep",
+      "expected_members": 1,
+      "max_lead_h": 384,
+      "fields": [
+        {"key": "precipitation", "role": "precipitation", "required": true, "variable": "APCP", "level": "surface", "units_out": "mm"},
+        {"key": "mean_sea_level_pressure", "role": "surface", "required": true, "variable": "PRMSL", "level": "mean sea level", "units_out": "hPa"},
+        {"key": "temperature_2m", "role": "temperature", "required": false, "variable": "TMP", "level": "2 m above ground", "units_out": "degC"},
+        {"key": "wind_u_10m", "role": "wind", "required": false, "variable": "UGRD", "level": "10 m above ground", "units_out": "m s-1"},
+        {"key": "wind_v_10m", "role": "wind", "required": false, "variable": "VGRD", "level": "10 m above ground", "units_out": "m s-1"},
+        {"key": "shortwave_surface", "role": "solar", "required": false, "variable": "DSWRF", "level": "surface", "units_out": "W m-2"},
+        {"key": "cape_surface", "role": "severe_weather", "required": false, "variable": "CAPE", "level": "surface", "units_out": "J kg-1"},
+        {"key": "temperature_850", "role": "850_hpa", "required": true, "variable": "TMP", "level": "850 mb", "units_out": "degC"},
+        {"key": "relative_humidity_850", "role": "850_hpa", "required": true, "variable": "RH", "level": "850 mb", "units_out": "%"},
+        {"key": "wind_u_850", "role": "850_hpa", "required": true, "variable": "UGRD", "level": "850 mb", "units_out": "m s-1"},
+        {"key": "wind_v_850", "role": "850_hpa", "required": true, "variable": "VGRD", "level": "850 mb", "units_out": "m s-1"},
+        {"key": "geopotential_500", "role": "500_hpa", "required": true, "variable": "HGT", "level": "500 mb", "units_out": "gpm"},
+        {"key": "vorticity_500", "role": "500_hpa", "required": false, "variable": "ABSV", "level": "500 mb", "units_out": "s-1"},
+        {"key": "geopotential_250", "role": "200_250_hpa", "required": true, "variable": "HGT", "level": "250 mb", "units_out": "gpm"},
+        {"key": "wind_u_250", "role": "200_250_hpa", "required": true, "variable": "UGRD", "level": "250 mb", "units_out": "m s-1"},
+        {"key": "wind_v_250", "role": "200_250_hpa", "required": true, "variable": "VGRD", "level": "250 mb", "units_out": "m s-1"}
+      ]
+    },
+    "gefs": {
+      "family": "ncep",
+      "expected_members": 31,
+      "max_lead_h": 384,
+      "fields": [
+        {"key": "precipitation", "role": "precipitation", "required": true, "variable": "APCP", "level": "surface", "units_out": "mm"}
+      ]
+    },
+    "ec": {
+      "family": "ecmwf",
+      "expected_members": 1,
+      "max_lead_h": 240,
+      "fields": [
+        {"key": "precipitation", "role": "precipitation", "required": true, "param": "tp", "levtype": "sfc", "units_out": "mm"},
+        {"key": "mean_sea_level_pressure", "role": "surface", "required": true, "param": "msl", "levtype": "sfc", "units_out": "hPa"},
+        {"key": "temperature_2m", "role": "temperature", "required": false, "param": "2t", "levtype": "sfc", "units_out": "degC"},
+        {"key": "wind_u_10m", "role": "wind", "required": false, "param": "10u", "levtype": "sfc", "units_out": "m s-1"},
+        {"key": "wind_v_10m", "role": "wind", "required": false, "param": "10v", "levtype": "sfc", "units_out": "m s-1"},
+        {"key": "shortwave_surface", "role": "solar", "required": false, "param": "ssrd", "levtype": "sfc", "units_out": "J m-2"},
+        {"key": "cape_surface", "role": "severe_weather", "required": false, "param": ["mucape", "cape"], "levtype": "sfc", "units_out": "J kg-1"},
+        {"key": "temperature_850", "role": "850_hpa", "required": true, "param": "t", "levtype": "pl", "level": 850, "units_out": "degC"},
+        {"key": "relative_humidity_850", "role": "850_hpa", "required": true, "param": "r", "levtype": "pl", "level": 850, "units_out": "%"},
+        {"key": "wind_u_850", "role": "850_hpa", "required": true, "param": "u", "levtype": "pl", "level": 850, "units_out": "m s-1"},
+        {"key": "wind_v_850", "role": "850_hpa", "required": true, "param": "v", "levtype": "pl", "level": 850, "units_out": "m s-1"},
+        {"key": "geopotential_500", "role": "500_hpa", "required": true, "param": "gh", "levtype": "pl", "level": 500, "units_out": "gpm"},
+        {"key": "vorticity_500", "role": "500_hpa", "required": false, "param": "vo", "levtype": "pl", "level": 500, "units_out": "s-1"},
+        {"key": "geopotential_250", "role": "200_250_hpa", "required": true, "param": "gh", "levtype": "pl", "level": 250, "units_out": "gpm"},
+        {"key": "wind_u_250", "role": "200_250_hpa", "required": true, "param": "u", "levtype": "pl", "level": 250, "units_out": "m s-1"},
+        {"key": "wind_v_250", "role": "200_250_hpa", "required": true, "param": "v", "levtype": "pl", "level": 250, "units_out": "m s-1"}
+      ]
+    },
+    "ecens": {
+      "family": "ecmwf",
+      "expected_members": 50,
+      "max_lead_h": 336,
+      "fields": [
+        {"key": "precipitation", "role": "precipitation", "required": true, "param": "tp", "levtype": "sfc", "units_out": "mm"}
+      ]
+    }
+  }
+}

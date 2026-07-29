@@ -1,0 +1,2466 @@
+{
+  "$comment": "Canonical standalone contract for the current open pipeline.",
+  "$defs": {
+    "Agreement": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "not_available"
+      ],
+      "title": "Agreement",
+      "type": "string"
+    },
+    "AtmosphericLevelDiagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "signals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Signals",
+          "type": "array"
+        },
+        "source_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Fields",
+          "type": "array"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "supported_by_families": {
+          "items": {
+            "$ref": "#/$defs/ModelFamily"
+          },
+          "title": "Supported By Families",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "signals",
+        "supported_by_families",
+        "confidence",
+        "source_fields"
+      ],
+      "title": "AtmosphericLevelDiagnostic",
+      "type": "object"
+    },
+    "BasinAnalysis": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aliases",
+          "type": "array"
+        },
+        "area_km2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Area Km2"
+        },
+        "basin_id": {
+          "title": "Basin Id",
+          "type": "string"
+        },
+        "editorial_reference": {
+          "title": "Editorial Reference",
+          "type": "string"
+        },
+        "geometry_limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Geometry Limitations",
+          "type": "array"
+        },
+        "geometry_source_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Geometry Source Name"
+        },
+        "geometry_status": {
+          "$ref": "#/$defs/DataStatus"
+        },
+        "geometry_version": {
+          "title": "Geometry Version",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "observed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObservedRain"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subsystem": {
+          "$ref": "#/$defs/Subsystem"
+        },
+        "windows": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BasinWindows"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "basin_id",
+        "name",
+        "editorial_reference",
+        "subsystem",
+        "geometry_version",
+        "geometry_status",
+        "geometry_source_name",
+        "area_km2",
+        "observed",
+        "windows"
+      ],
+      "title": "BasinAnalysis",
+      "type": "object"
+    },
+    "BasinWindowAnalysis": {
+      "additionalProperties": false,
+      "properties": {
+        "climatology": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClimatologyWindow"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "daily_timing": {
+          "items": {
+            "$ref": "#/$defs/DailyForecastTiming"
+          },
+          "maxItems": 5,
+          "title": "Daily Timing",
+          "type": "array"
+        },
+        "ec": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeterministicPrecipitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ecens": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EnsemblePrecipitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "families": {
+          "$ref": "#/$defs/FamilyComparison"
+        },
+        "gefs": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EnsemblePrecipitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gfs": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeterministicPrecipitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "opinion": {
+          "$ref": "#/$defs/OpinionPrecipitation"
+        },
+        "quality": {
+          "$ref": "#/$defs/WindowDataQuality"
+        },
+        "spatial": {
+          "$ref": "#/$defs/SpatialDistribution"
+        }
+      },
+      "required": [
+        "gfs",
+        "ec",
+        "gefs",
+        "ecens",
+        "spatial",
+        "climatology",
+        "families",
+        "opinion",
+        "quality"
+      ],
+      "title": "BasinWindowAnalysis",
+      "type": "object"
+    },
+    "BasinWindows": {
+      "additionalProperties": false,
+      "properties": {
+        "p1": {
+          "$ref": "#/$defs/BasinWindowAnalysis"
+        },
+        "p2": {
+          "$ref": "#/$defs/BasinWindowAnalysis"
+        },
+        "p3": {
+          "$ref": "#/$defs/BasinWindowAnalysis"
+        }
+      },
+      "required": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "title": "BasinWindows",
+      "type": "object"
+    },
+    "ClimatologyWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "anomaly_mm": {
+          "title": "Anomaly Mm",
+          "type": "number"
+        },
+        "anomaly_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Anomaly Pct"
+        },
+        "climatology_id": {
+          "title": "Climatology Id",
+          "type": "string"
+        },
+        "mean_mm": {
+          "minimum": 0,
+          "title": "Mean Mm",
+          "type": "number"
+        },
+        "median_mm": {
+          "minimum": 0,
+          "title": "Median Mm",
+          "type": "number"
+        },
+        "p10_mm": {
+          "minimum": 0,
+          "title": "P10 Mm",
+          "type": "number"
+        },
+        "p25_mm": {
+          "minimum": 0,
+          "title": "P25 Mm",
+          "type": "number"
+        },
+        "p75_mm": {
+          "minimum": 0,
+          "title": "P75 Mm",
+          "type": "number"
+        },
+        "p90_mm": {
+          "minimum": 0,
+          "title": "P90 Mm",
+          "type": "number"
+        },
+        "percentile": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Percentile",
+          "type": "number"
+        }
+      },
+      "required": [
+        "climatology_id",
+        "mean_mm",
+        "median_mm",
+        "p10_mm",
+        "p25_mm",
+        "p75_mm",
+        "p90_mm",
+        "anomaly_mm",
+        "anomaly_pct",
+        "percentile"
+      ],
+      "title": "ClimatologyWindow",
+      "type": "object"
+    },
+    "Confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Confidence",
+      "type": "string"
+    },
+    "DailyForecastTiming": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "deterministic_center_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Deterministic Center Mm"
+        },
+        "ec_basin_mean_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ec Basin Mean Mm"
+        },
+        "family_difference_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Family Difference Mm"
+        },
+        "gfs_basin_mean_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gfs Basin Mean Mm"
+        }
+      },
+      "required": [
+        "date",
+        "gfs_basin_mean_mm",
+        "ec_basin_mean_mm",
+        "deterministic_center_mm",
+        "family_difference_mm",
+        "confidence"
+      ],
+      "title": "DailyForecastTiming",
+      "type": "object"
+    },
+    "DataStatus": {
+      "enum": [
+        "complete",
+        "partial",
+        "delayed",
+        "missing",
+        "failed",
+        "not_applicable"
+      ],
+      "title": "DataStatus",
+      "type": "string"
+    },
+    "DeterministicPrecipitation": {
+      "additionalProperties": false,
+      "properties": {
+        "corrected_basin_mean_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Corrected Basin Mean Mm"
+        },
+        "raw_basin_mean_mm": {
+          "minimum": 0,
+          "title": "Raw Basin Mean Mm",
+          "type": "number"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "spatial_coverage_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Spatial Coverage Pct",
+          "type": "number"
+        },
+        "valid_steps": {
+          "exclusiveMinimum": 0,
+          "title": "Valid Steps",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "raw_basin_mean_mm",
+        "corrected_basin_mean_mm",
+        "spatial_coverage_pct",
+        "valid_steps"
+      ],
+      "title": "DeterministicPrecipitation",
+      "type": "object"
+    },
+    "EnergySignal": {
+      "additionalProperties": false,
+      "properties": {
+        "areas_or_assets": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Areas Or Assets",
+          "type": "array"
+        },
+        "category": {
+          "enum": [
+            "wind",
+            "temperature",
+            "solar",
+            "severe_weather"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "material": {
+          "const": true,
+          "default": true,
+          "title": "Material",
+          "type": "boolean"
+        },
+        "meteorological_basis": {
+          "title": "Meteorological Basis",
+          "type": "string"
+        },
+        "operational_interpretation": {
+          "title": "Operational Interpretation",
+          "type": "string"
+        },
+        "signal_id": {
+          "title": "Signal Id",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "value_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value Max"
+        },
+        "value_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value Min"
+        },
+        "window_id": {
+          "$ref": "#/$defs/WindowId"
+        }
+      },
+      "required": [
+        "signal_id",
+        "window_id",
+        "category",
+        "areas_or_assets",
+        "meteorological_basis",
+        "operational_interpretation",
+        "confidence",
+        "source_ids"
+      ],
+      "title": "EnergySignal",
+      "type": "object"
+    },
+    "EnergySignals": {
+      "additionalProperties": false,
+      "properties": {
+        "severe_weather": {
+          "items": {
+            "$ref": "#/$defs/EnergySignal"
+          },
+          "title": "Severe Weather",
+          "type": "array"
+        },
+        "solar": {
+          "items": {
+            "$ref": "#/$defs/EnergySignal"
+          },
+          "title": "Solar",
+          "type": "array"
+        },
+        "temperature": {
+          "items": {
+            "$ref": "#/$defs/EnergySignal"
+          },
+          "title": "Temperature",
+          "type": "array"
+        },
+        "wind": {
+          "items": {
+            "$ref": "#/$defs/EnergySignal"
+          },
+          "title": "Wind",
+          "type": "array"
+        }
+      },
+      "title": "EnergySignals",
+      "type": "object"
+    },
+    "EnsemblePrecipitation": {
+      "additionalProperties": false,
+      "properties": {
+        "coefficient_of_variation": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Coefficient Of Variation"
+        },
+        "mean_mm": {
+          "minimum": 0,
+          "title": "Mean Mm",
+          "type": "number"
+        },
+        "members_available": {
+          "exclusiveMinimum": 0,
+          "title": "Members Available",
+          "type": "integer"
+        },
+        "members_expected": {
+          "exclusiveMinimum": 0,
+          "title": "Members Expected",
+          "type": "integer"
+        },
+        "p10_mm": {
+          "minimum": 0,
+          "title": "P10 Mm",
+          "type": "number"
+        },
+        "p25_mm": {
+          "minimum": 0,
+          "title": "P25 Mm",
+          "type": "number"
+        },
+        "p50_mm": {
+          "minimum": 0,
+          "title": "P50 Mm",
+          "type": "number"
+        },
+        "p75_mm": {
+          "minimum": 0,
+          "title": "P75 Mm",
+          "type": "number"
+        },
+        "p90_mm": {
+          "minimum": 0,
+          "title": "P90 Mm",
+          "type": "number"
+        },
+        "probabilities": {
+          "$ref": "#/$defs/EnsembleProbabilities"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "spread_mm": {
+          "minimum": 0,
+          "title": "Spread Mm",
+          "type": "number"
+        }
+      },
+      "required": [
+        "members_expected",
+        "members_available",
+        "p10_mm",
+        "p25_mm",
+        "p50_mm",
+        "p75_mm",
+        "p90_mm",
+        "mean_mm",
+        "spread_mm",
+        "coefficient_of_variation",
+        "probabilities"
+      ],
+      "title": "EnsemblePrecipitation",
+      "type": "object"
+    },
+    "EnsembleProbabilities": {
+      "additionalProperties": false,
+      "properties": {
+        "gt_100mm": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gt 100Mm",
+          "type": "number"
+        },
+        "gt_10mm": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gt 10Mm",
+          "type": "number"
+        },
+        "gt_25mm": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gt 25Mm",
+          "type": "number"
+        },
+        "gt_50mm": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gt 50Mm",
+          "type": "number"
+        },
+        "gt_5mm": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gt 5Mm",
+          "type": "number"
+        }
+      },
+      "required": [
+        "gt_5mm",
+        "gt_10mm",
+        "gt_25mm",
+        "gt_50mm",
+        "gt_100mm"
+      ],
+      "title": "EnsembleProbabilities",
+      "type": "object"
+    },
+    "FamilyComparison": {
+      "additionalProperties": false,
+      "properties": {
+        "agreement": {
+          "$ref": "#/$defs/Agreement"
+        },
+        "difference_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Difference Mm"
+        },
+        "ecmwf": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FamilyPrecipitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ncep": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FamilyPrecipitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "same_signal": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Same Signal"
+        },
+        "same_spatial_pattern": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Same Spatial Pattern"
+        }
+      },
+      "required": [
+        "ncep",
+        "ecmwf",
+        "agreement",
+        "difference_mm",
+        "same_signal",
+        "same_spatial_pattern"
+      ],
+      "title": "FamilyComparison",
+      "type": "object"
+    },
+    "FamilyPrecipitation": {
+      "additionalProperties": false,
+      "properties": {
+        "calibrated_median_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Calibrated Median Mm"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "deterministic_inside_ensemble_p10_p90": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Deterministic Inside Ensemble P10 P90"
+        },
+        "deterministic_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Deterministic Mm"
+        },
+        "ensemble_median_mm": {
+          "minimum": 0,
+          "title": "Ensemble Median Mm",
+          "type": "number"
+        },
+        "family": {
+          "$ref": "#/$defs/ModelFamily"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "family",
+        "ensemble_median_mm",
+        "calibrated_median_mm",
+        "deterministic_mm",
+        "deterministic_inside_ensemble_p10_p90",
+        "confidence"
+      ],
+      "title": "FamilyPrecipitation",
+      "type": "object"
+    },
+    "ForecastWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_days": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Days",
+          "type": "integer"
+        },
+        "end_utc": {
+          "format": "date-time",
+          "title": "End Utc",
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/WindowId"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "start_utc": {
+          "format": "date-time",
+          "title": "Start Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "start_utc",
+        "end_utc",
+        "duration_days"
+      ],
+      "title": "ForecastWindow",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "cutoff_utc": {
+          "format": "date-time",
+          "title": "Cutoff Utc",
+          "type": "string"
+        },
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "time": {
+          "format": "time",
+          "title": "Time",
+          "type": "string"
+        },
+        "timezone": {
+          "const": "America/Sao_Paulo",
+          "default": "America/Sao_Paulo",
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "date",
+        "time",
+        "cutoff_utc"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "MaterialChange": {
+      "additionalProperties": false,
+      "properties": {
+        "changes": {
+          "items": {
+            "$ref": "#/$defs/MaterialWindowChange"
+          },
+          "minItems": 1,
+          "title": "Changes",
+          "type": "array"
+        },
+        "previous_issue_date": {
+          "format": "date",
+          "title": "Previous Issue Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "previous_issue_date",
+        "changes"
+      ],
+      "title": "MaterialChange",
+      "type": "object"
+    },
+    "MaterialWindowChange": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_basin_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Basin Ids",
+          "type": "array"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "wetter",
+            "drier",
+            "timing",
+            "spatial_shift",
+            "other"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "window_id": {
+          "$ref": "#/$defs/WindowId"
+        }
+      },
+      "required": [
+        "window_id",
+        "description",
+        "direction",
+        "confidence"
+      ],
+      "title": "MaterialWindowChange",
+      "type": "object"
+    },
+    "ModelFamily": {
+      "enum": [
+        "ncep",
+        "ecmwf"
+      ],
+      "title": "ModelFamily",
+      "type": "string"
+    },
+    "ModelId": {
+      "enum": [
+        "gfs",
+        "gefs",
+        "ec",
+        "ecens"
+      ],
+      "title": "ModelId",
+      "type": "string"
+    },
+    "ModelRun": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Available At"
+        },
+        "available_members": {
+          "minimum": 0,
+          "title": "Available Members",
+          "type": "integer"
+        },
+        "available_steps": {
+          "minimum": 0,
+          "title": "Available Steps",
+          "type": "integer"
+        },
+        "available_variables": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Available Variables",
+          "type": "array"
+        },
+        "cycle": {
+          "const": "00",
+          "default": "00",
+          "title": "Cycle",
+          "type": "string"
+        },
+        "expected_members": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Members",
+          "type": "integer"
+        },
+        "expected_steps": {
+          "minimum": 0,
+          "title": "Expected Steps",
+          "type": "integer"
+        },
+        "family": {
+          "$ref": "#/$defs/ModelFamily"
+        },
+        "init_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Init Time"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "max_lead_h": {
+          "minimum": 0,
+          "title": "Max Lead H",
+          "type": "integer"
+        },
+        "missing_valid_times": {
+          "items": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": "Missing Valid Times",
+          "type": "array"
+        },
+        "model": {
+          "$ref": "#/$defs/ModelId"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/DataStatus"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "model",
+        "family",
+        "init_time",
+        "available_at",
+        "status",
+        "max_lead_h",
+        "expected_members",
+        "available_members",
+        "expected_steps",
+        "available_steps"
+      ],
+      "title": "ModelRun",
+      "type": "object"
+    },
+    "ModelRuns": {
+      "additionalProperties": false,
+      "properties": {
+        "ec": {
+          "$ref": "#/$defs/ModelRun"
+        },
+        "ecens": {
+          "$ref": "#/$defs/ModelRun"
+        },
+        "gefs": {
+          "$ref": "#/$defs/ModelRun"
+        },
+        "gfs": {
+          "$ref": "#/$defs/ModelRun"
+        }
+      },
+      "required": [
+        "gfs",
+        "gefs",
+        "ec",
+        "ecens"
+      ],
+      "title": "ModelRuns",
+      "type": "object"
+    },
+    "ObservedDailyRain": {
+      "additionalProperties": false,
+      "properties": {
+        "basin_mean_mm": {
+          "minimum": 0,
+          "title": "Basin Mean Mm",
+          "type": "number"
+        },
+        "complete": {
+          "const": true,
+          "default": true,
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "coverage_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Coverage Pct",
+          "type": "number"
+        },
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "end_utc": {
+          "format": "date-time",
+          "title": "End Utc",
+          "type": "string"
+        },
+        "start_utc": {
+          "format": "date-time",
+          "title": "Start Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "date",
+        "start_utc",
+        "end_utc",
+        "basin_mean_mm",
+        "coverage_pct"
+      ],
+      "title": "ObservedDailyRain",
+      "type": "object"
+    },
+    "ObservedRain": {
+      "additionalProperties": false,
+      "properties": {
+        "antecedent_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Antecedent Index"
+        },
+        "coverage_pct": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Coverage Pct"
+        },
+        "data_end_utc": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Data End Utc"
+        },
+        "event_accumulation_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Event Accumulation Mm"
+        },
+        "latest_partial_coverage_pct": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Partial Coverage Pct"
+        },
+        "latest_partial_end_utc": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Partial End Utc"
+        },
+        "latest_partial_start_utc": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Partial Start Utc"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "percentile": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Percentile"
+        },
+        "rain_10d_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rain 10D Mm"
+        },
+        "rain_24h_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rain 24H Mm"
+        },
+        "rain_30d_anomaly_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rain 30D Anomaly Pct"
+        },
+        "rain_30d_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rain 30D Mm"
+        },
+        "rain_5d_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rain 5D Mm"
+        },
+        "rain_72h_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rain 72H Mm"
+        },
+        "rain_latest_partial_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rain Latest Partial Mm"
+        },
+        "recent_daily": {
+          "items": {
+            "$ref": "#/$defs/ObservedDailyRain"
+          },
+          "maxItems": 10,
+          "title": "Recent Daily",
+          "type": "array"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/DataStatus"
+        }
+      },
+      "required": [
+        "status",
+        "data_end_utc",
+        "rain_24h_mm",
+        "rain_72h_mm",
+        "rain_5d_mm",
+        "rain_10d_mm",
+        "rain_30d_mm",
+        "rain_30d_anomaly_pct",
+        "event_accumulation_mm",
+        "antecedent_index",
+        "percentile",
+        "coverage_pct"
+      ],
+      "title": "ObservedRain",
+      "type": "object"
+    },
+    "OpinionPrecipitation": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "enum": [
+            "two_family_consensus",
+            "single_family",
+            "ensemble_regime",
+            "insufficient_for_number"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "family_weights": {
+          "additionalProperties": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/ModelFamily"
+          },
+          "title": "Family Weights",
+          "type": "object"
+        },
+        "range_mm": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Range Mm",
+          "type": "array"
+        },
+        "rounded_mm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rounded Mm"
+        },
+        "uncertainty_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Uncertainty Note"
+        }
+      },
+      "required": [
+        "range_mm",
+        "rounded_mm",
+        "confidence",
+        "basis",
+        "uncertainty_note"
+      ],
+      "title": "OpinionPrecipitation",
+      "type": "object"
+    },
+    "PacketAudit": {
+      "additionalProperties": false,
+      "properties": {
+        "code_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Code Revision"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "field_config_version": {
+          "title": "Field Config Version",
+          "type": "string"
+        },
+        "input_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Input Manifest Sha256",
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "packet_id": {
+          "pattern": "^[a-zA-Z0-9._:-]{8,120}$",
+          "title": "Packet Id",
+          "type": "string"
+        },
+        "pipeline_version": {
+          "title": "Pipeline Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "packet_id",
+        "created_at",
+        "pipeline_version",
+        "field_config_version",
+        "code_revision",
+        "input_manifest_sha256"
+      ],
+      "title": "PacketAudit",
+      "type": "object"
+    },
+    "QualityManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "basin_geometry_version": {
+          "title": "Basin Geometry Version",
+          "type": "string"
+        },
+        "blockers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blockers",
+          "type": "array"
+        },
+        "checks_passed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Checks Passed",
+          "type": "array"
+        },
+        "climatology_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Climatology Id"
+        },
+        "delayed_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Delayed Sources",
+          "type": "array"
+        },
+        "forecast_coverage_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Forecast Coverage Pct",
+          "type": "number"
+        },
+        "generation_allowed": {
+          "title": "Generation Allowed",
+          "type": "boolean"
+        },
+        "incomplete_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Incomplete Sources",
+          "type": "array"
+        },
+        "missing_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Sources",
+          "type": "array"
+        },
+        "observed_coverage_pct": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Observed Coverage Pct"
+        },
+        "summary_basin_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Summary Basin Ids",
+          "type": "array"
+        },
+        "summary_basin_scope_id": {
+          "title": "Summary Basin Scope Id",
+          "type": "string"
+        },
+        "summary_basin_scope_version": {
+          "title": "Summary Basin Scope Version",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "generation_allowed",
+        "climatology_id",
+        "basin_geometry_version",
+        "summary_basin_scope_id",
+        "summary_basin_scope_version",
+        "summary_basin_ids",
+        "observed_coverage_pct",
+        "forecast_coverage_pct"
+      ],
+      "title": "QualityManifest",
+      "type": "object"
+    },
+    "RegionalTemperatureDiagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "change_degc": {
+          "title": "Change Degc",
+          "type": "number"
+        },
+        "climatology_id": {
+          "title": "Climatology Id",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "end_anomaly_degc": {
+          "title": "End Anomaly Degc",
+          "type": "number"
+        },
+        "end_regime": {
+          "enum": [
+            "below_average",
+            "near_average",
+            "above_average"
+          ],
+          "title": "End Regime",
+          "type": "string"
+        },
+        "pattern_change": {
+          "title": "Pattern Change",
+          "type": "boolean"
+        },
+        "region_id": {
+          "title": "Region Id",
+          "type": "string"
+        },
+        "region_label": {
+          "title": "Region Label",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "start_anomaly_degc": {
+          "title": "Start Anomaly Degc",
+          "type": "number"
+        },
+        "start_regime": {
+          "enum": [
+            "below_average",
+            "near_average",
+            "above_average"
+          ],
+          "title": "Start Regime",
+          "type": "string"
+        },
+        "supported_by_families": {
+          "items": {
+            "$ref": "#/$defs/ModelFamily"
+          },
+          "minItems": 1,
+          "title": "Supported By Families",
+          "type": "array"
+        },
+        "trend": {
+          "enum": [
+            "warming",
+            "cooling",
+            "stable"
+          ],
+          "title": "Trend",
+          "type": "string"
+        }
+      },
+      "required": [
+        "region_id",
+        "region_label",
+        "start_regime",
+        "end_regime",
+        "trend",
+        "pattern_change",
+        "start_anomaly_degc",
+        "end_anomaly_degc",
+        "change_degc",
+        "climatology_id",
+        "supported_by_families",
+        "confidence"
+      ],
+      "title": "RegionalTemperatureDiagnostic",
+      "type": "object"
+    },
+    "RoundingRules": {
+      "additionalProperties": false,
+      "properties": {
+        "above_100_mm_min_step": {
+          "const": 10,
+          "default": 10,
+          "title": "Above 100 Mm Min Step",
+          "type": "integer"
+        },
+        "dry_signal_threshold_mm": {
+          "const": 5,
+          "default": 5,
+          "title": "Dry Signal Threshold Mm",
+          "type": "integer"
+        },
+        "from_20_to_100_high_spread_step": {
+          "const": 10,
+          "default": 10,
+          "title": "From 20 To 100 High Spread Step",
+          "type": "integer"
+        },
+        "from_20_to_100_low_spread_step": {
+          "const": 5,
+          "default": 5,
+          "title": "From 20 To 100 Low Spread Step",
+          "type": "integer"
+        },
+        "prefer_iqr_if_width_at_least_mm": {
+          "default": 20,
+          "minimum": 0,
+          "title": "Prefer Iqr If Width At Least Mm",
+          "type": "number"
+        },
+        "up_to_20_mm_step": {
+          "const": 5,
+          "default": 5,
+          "title": "Up To 20 Mm Step",
+          "type": "integer"
+        }
+      },
+      "title": "RoundingRules",
+      "type": "object"
+    },
+    "SourceManifestEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "forecast",
+            "observation",
+            "climatology",
+            "generation"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "checksum_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checksum Sha256"
+        },
+        "collected_at": {
+          "format": "date-time",
+          "title": "Collected At",
+          "type": "string"
+        },
+        "data_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Data Time"
+        },
+        "latency_minutes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency Minutes"
+        },
+        "license_or_terms": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "License Or Terms"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "provider": {
+          "enum": [
+            "NOAA",
+            "ECMWF",
+            "GPM_IMERG",
+            "MERGE_INPE",
+            "OpenAI"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,79}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/DataStatus"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        },
+        "variables": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Variables",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "provider",
+        "category",
+        "url",
+        "collected_at",
+        "data_time",
+        "status",
+        "latency_minutes",
+        "license_or_terms"
+      ],
+      "title": "SourceManifestEntry",
+      "type": "object"
+    },
+    "SpatialDistribution": {
+      "additionalProperties": false,
+      "properties": {
+        "area_gt_10mm_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Area Gt 10Mm Pct",
+          "type": "number"
+        },
+        "area_gt_25mm_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Area Gt 25Mm Pct",
+          "type": "number"
+        },
+        "area_gt_50mm_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Area Gt 50Mm Pct",
+          "type": "number"
+        },
+        "area_gt_5mm_pct": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Area Gt 5Mm Pct",
+          "type": "number"
+        },
+        "basin_mean_mm": {
+          "minimum": 0,
+          "title": "Basin Mean Mm",
+          "type": "number"
+        },
+        "basin_median_mm": {
+          "minimum": 0,
+          "title": "Basin Median Mm",
+          "type": "number"
+        },
+        "basin_p10_mm": {
+          "minimum": 0,
+          "title": "Basin P10 Mm",
+          "type": "number"
+        },
+        "basin_p90_mm": {
+          "minimum": 0,
+          "title": "Basin P90 Mm",
+          "type": "number"
+        },
+        "point_max_is_gridpoint": {
+          "const": true,
+          "default": true,
+          "title": "Point Max Is Gridpoint",
+          "type": "boolean"
+        },
+        "point_max_mm": {
+          "minimum": 0,
+          "title": "Point Max Mm",
+          "type": "number"
+        }
+      },
+      "required": [
+        "basin_mean_mm",
+        "basin_median_mm",
+        "basin_p10_mm",
+        "basin_p90_mm",
+        "area_gt_5mm_pct",
+        "area_gt_10mm_pct",
+        "area_gt_25mm_pct",
+        "area_gt_50mm_pct",
+        "point_max_mm"
+      ],
+      "title": "SpatialDistribution",
+      "type": "object"
+    },
+    "StructuredSynopticFeature": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_basin_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Basin Ids",
+          "type": "array"
+        },
+        "canonical_name": {
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "continues_into": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WindowId"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "effects": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Effects",
+          "type": "array"
+        },
+        "end_utc": {
+          "format": "date-time",
+          "title": "End Utc",
+          "type": "string"
+        },
+        "evidence_fields": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Fields",
+          "type": "array"
+        },
+        "feature_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{5,119}$",
+          "title": "Feature Id",
+          "type": "string"
+        },
+        "feature_type": {
+          "enum": [
+            "cold_front",
+            "post_frontal_high",
+            "high_pressure",
+            "deepening_low",
+            "low_pressure",
+            "trough",
+            "ridge",
+            "moisture_convergence",
+            "zcas"
+          ],
+          "title": "Feature Type",
+          "type": "string"
+        },
+        "lifecycle": {
+          "enum": [
+            "antecedent",
+            "establishing",
+            "dominant",
+            "weakening",
+            "developing",
+            "crossing",
+            "moving_offshore"
+          ],
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "peak_utc": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Peak Utc"
+        },
+        "regions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Regions",
+          "type": "array"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "start_utc": {
+          "format": "date-time",
+          "title": "Start Utc",
+          "type": "string"
+        },
+        "supported_by_families": {
+          "items": {
+            "$ref": "#/$defs/ModelFamily"
+          },
+          "minItems": 1,
+          "title": "Supported By Families",
+          "type": "array"
+        }
+      },
+      "required": [
+        "feature_id",
+        "feature_type",
+        "canonical_name",
+        "lifecycle",
+        "start_utc",
+        "end_utc",
+        "regions",
+        "evidence_fields",
+        "supported_by_families",
+        "confidence",
+        "description"
+      ],
+      "title": "StructuredSynopticFeature",
+      "type": "object"
+    },
+    "Subsystem": {
+      "enum": [
+        "S",
+        "SE_CO",
+        "NE",
+        "N"
+      ],
+      "title": "Subsystem",
+      "type": "string"
+    },
+    "SynopticDiagnostics": {
+      "additionalProperties": false,
+      "properties": {
+        "p1": {
+          "$ref": "#/$defs/SynopticWindowDiagnostic"
+        },
+        "p2": {
+          "$ref": "#/$defs/SynopticWindowDiagnostic"
+        },
+        "p3": {
+          "$ref": "#/$defs/SynopticWindowDiagnostic"
+        }
+      },
+      "required": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "title": "SynopticDiagnostics",
+      "type": "object"
+    },
+    "SynopticWindowDiagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "dominant_pattern": {
+          "title": "Dominant Pattern",
+          "type": "string"
+        },
+        "family_agreement": {
+          "$ref": "#/$defs/Agreement"
+        },
+        "low_levels_850_hpa": {
+          "$ref": "#/$defs/AtmosphericLevelDiagnostic"
+        },
+        "mid_levels_500_hpa": {
+          "$ref": "#/$defs/AtmosphericLevelDiagnostic"
+        },
+        "regional_temperature": {
+          "items": {
+            "$ref": "#/$defs/RegionalTemperatureDiagnostic"
+          },
+          "title": "Regional Temperature",
+          "type": "array"
+        },
+        "structured_features": {
+          "items": {
+            "$ref": "#/$defs/StructuredSynopticFeature"
+          },
+          "title": "Structured Features",
+          "type": "array"
+        },
+        "supported_features": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Supported Features",
+          "type": "array"
+        },
+        "surface": {
+          "$ref": "#/$defs/AtmosphericLevelDiagnostic"
+        },
+        "timeline": {
+          "items": {
+            "$ref": "#/$defs/TimelineEvent"
+          },
+          "title": "Timeline",
+          "type": "array"
+        },
+        "uncertainty": {
+          "title": "Uncertainty",
+          "type": "string"
+        },
+        "upper_levels_200_250_hpa": {
+          "$ref": "#/$defs/AtmosphericLevelDiagnostic"
+        }
+      },
+      "required": [
+        "dominant_pattern",
+        "timeline",
+        "surface",
+        "low_levels_850_hpa",
+        "mid_levels_500_hpa",
+        "upper_levels_200_250_hpa",
+        "supported_features",
+        "family_agreement",
+        "uncertainty"
+      ],
+      "title": "SynopticWindowDiagnostic",
+      "type": "object"
+    },
+    "TimelineEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "end_utc": {
+          "format": "date-time",
+          "title": "End Utc",
+          "type": "string"
+        },
+        "start_utc": {
+          "format": "date-time",
+          "title": "Start Utc",
+          "type": "string"
+        },
+        "timing_confidence": {
+          "$ref": "#/$defs/Confidence"
+        }
+      },
+      "required": [
+        "start_utc",
+        "end_utc",
+        "description",
+        "timing_confidence"
+      ],
+      "title": "TimelineEvent",
+      "type": "object"
+    },
+    "WindowDataQuality": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage_pct": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Coverage Pct"
+        },
+        "missing_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Fields",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/DataStatus"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "coverage_pct"
+      ],
+      "title": "WindowDataQuality",
+      "type": "object"
+    },
+    "WindowId": {
+      "enum": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "title": "WindowId",
+      "type": "string"
+    }
+  },
+  "$id": "urn:open-resumo-meteo:schema:analysis-packet:v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Current JSON-serializable hand-off to the editorial model.",
+  "properties": {
+    "audit": {
+      "$ref": "#/$defs/PacketAudit"
+    },
+    "basins": {
+      "items": {
+        "$ref": "#/$defs/BasinAnalysis"
+      },
+      "minItems": 1,
+      "title": "Basins",
+      "type": "array"
+    },
+    "energy_signals": {
+      "$ref": "#/$defs/EnergySignals"
+    },
+    "forecast_windows": {
+      "items": {
+        "$ref": "#/$defs/ForecastWindow"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Forecast Windows",
+      "type": "array"
+    },
+    "issue": {
+      "$ref": "#/$defs/Issue"
+    },
+    "material_change": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MaterialChange"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "model_runs": {
+      "$ref": "#/$defs/ModelRuns"
+    },
+    "quality": {
+      "$ref": "#/$defs/QualityManifest"
+    },
+    "rounding_mm": {
+      "$ref": "#/$defs/RoundingRules"
+    },
+    "schema_version": {
+      "const": 2,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "source_manifest": {
+      "items": {
+        "$ref": "#/$defs/SourceManifestEntry"
+      },
+      "minItems": 1,
+      "title": "Source Manifest",
+      "type": "array"
+    },
+    "synoptic_diagnostics": {
+      "$ref": "#/$defs/SynopticDiagnostics"
+    }
+  },
+  "required": [
+    "schema_version",
+    "issue",
+    "forecast_windows",
+    "model_runs",
+    "basins",
+    "synoptic_diagnostics",
+    "energy_signals",
+    "material_change",
+    "rounding_mm",
+    "source_manifest",
+    "quality",
+    "audit"
+  ],
+  "title": "Open Resumo Meteo weather summary analysis packet v2",
+  "type": "object"
+}

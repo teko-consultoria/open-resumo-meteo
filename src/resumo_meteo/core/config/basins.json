@@ -1,0 +1,371 @@
+{
+  "schema_version": 4,
+  "catalog_id": "smap-aggregated-basins-apr2025",
+  "catalog_version": "2.0.0",
+  "source_note": "Catálogo canônico dos 27 contornos públicos agregados segundo a configuração SMAP de abril de 2025 e alinhados ao conjunto operacional dos mapas gradeados. O resumo meteorológico usa somente as 12 bacias com climatologia MERGE/INPE compatível; as demais permanecem disponíveis no catálogo geométrico.",
+  "crs": "EPSG:4326",
+  "basins": [
+    {
+      "basin_id": "amazonas_norte",
+      "canonical_name": "Amazonas Norte",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Amazonas Norte"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Amazonas",
+      "geometry_id": "smap-aggregated-amazonas_norte",
+      "geometry_path": "assets/basins/v2/amazonas_norte.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.amazonas_norte"
+    },
+    {
+      "basin_id": "amazonas_sudeste",
+      "canonical_name": "Amazonas Sudeste",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Amazonas Sudeste"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Amazonas",
+      "geometry_id": "smap-aggregated-amazonas_sudeste",
+      "geometry_path": "assets/basins/v2/amazonas_sudeste.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.amazonas_sudeste"
+    },
+    {
+      "basin_id": "araguari",
+      "canonical_name": "Araguari",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Araguari"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Amazônica",
+      "geometry_id": "smap-aggregated-araguari",
+      "geometry_path": "assets/basins/v2/araguari.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.araguari"
+    },
+    {
+      "basin_id": "capivari",
+      "canonical_name": "Capivari",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Capivari"
+      ],
+      "subsystem": "S",
+      "hydrographic_region": "Atlântico Sul",
+      "geometry_id": "smap-aggregated-capivari",
+      "geometry_path": "assets/basins/v2/capivari.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.capivari"
+    },
+    {
+      "basin_id": "doce",
+      "canonical_name": "Doce",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Doce"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Atlântico Sudeste",
+      "geometry_id": "smap-aggregated-doce",
+      "geometry_path": "assets/basins/v2/doce.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.doce"
+    },
+    {
+      "basin_id": "grande",
+      "canonical_name": "Grande",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Grande"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Paraná",
+      "geometry_id": "smap-aggregated-grande",
+      "geometry_path": "assets/basins/v2/grande.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.grande"
+    },
+    {
+      "basin_id": "iguacu",
+      "canonical_name": "Iguaçu",
+      "editorial_article": "o",
+      "aliases": [
+        "iguacu",
+        "Bacia do Iguaçu"
+      ],
+      "subsystem": "S",
+      "hydrographic_region": "Paraná",
+      "geometry_id": "smap-aggregated-iguacu",
+      "geometry_path": "assets/basins/v2/iguacu.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.iguacu"
+    },
+    {
+      "basin_id": "itabapoana",
+      "canonical_name": "Itabapoana",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Itabapoana"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Atlântico Sudeste",
+      "geometry_id": "smap-aggregated-itabapoana",
+      "geometry_path": "assets/basins/v2/itabapoana.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.itabapoana"
+    },
+    {
+      "basin_id": "itajai_acu",
+      "canonical_name": "Itajaí-Açu",
+      "editorial_article": "o",
+      "aliases": [
+        "itajai-acu",
+        "Bacia do Itajaí-Açu"
+      ],
+      "subsystem": "S",
+      "hydrographic_region": "Atlântico Sul",
+      "geometry_id": "smap-aggregated-itajai_acu",
+      "geometry_path": "assets/basins/v2/itajai_acu.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.itajai_acu"
+    },
+    {
+      "basin_id": "jacui",
+      "canonical_name": "Jacuí",
+      "editorial_article": "o",
+      "aliases": [
+        "jacui",
+        "Bacia do Jacuí"
+      ],
+      "subsystem": "S",
+      "hydrographic_region": "Atlântico Sul",
+      "geometry_id": "smap-aggregated-jacui",
+      "geometry_path": "assets/basins/v2/jacui.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.jacui"
+    },
+    {
+      "basin_id": "jequitinhonha",
+      "canonical_name": "Jequitinhonha",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Jequitinhonha"
+      ],
+      "subsystem": "NE",
+      "hydrographic_region": "Atlântico Leste",
+      "geometry_id": "smap-aggregated-jequitinhonha",
+      "geometry_path": "assets/basins/v2/jequitinhonha.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.jequitinhonha"
+    },
+    {
+      "basin_id": "madeira",
+      "canonical_name": "Madeira",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Madeira"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Madeira",
+      "geometry_id": "smap-aggregated-madeira",
+      "geometry_path": "assets/basins/v2/madeira.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.madeira"
+    },
+    {
+      "basin_id": "mucuri",
+      "canonical_name": "Mucuri",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Mucuri"
+      ],
+      "subsystem": "NE",
+      "hydrographic_region": "Atlântico Leste",
+      "geometry_id": "smap-aggregated-mucuri",
+      "geometry_path": "assets/basins/v2/mucuri.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.mucuri"
+    },
+    {
+      "basin_id": "paraguacu",
+      "canonical_name": "Paraguaçu",
+      "editorial_article": "o",
+      "aliases": [
+        "paraguacu",
+        "Bacia do Paraguaçu"
+      ],
+      "subsystem": "NE",
+      "hydrographic_region": "Atlântico Leste",
+      "geometry_id": "smap-aggregated-paraguacu",
+      "geometry_path": "assets/basins/v2/paraguacu.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.paraguacu"
+    },
+    {
+      "basin_id": "paraguai",
+      "canonical_name": "Paraguai",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Paraguai"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Paraguai",
+      "geometry_id": "smap-aggregated-paraguai",
+      "geometry_path": "assets/basins/v2/paraguai.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.paraguai"
+    },
+    {
+      "basin_id": "paraiba_do_sul",
+      "canonical_name": "Paraíba do Sul",
+      "editorial_article": "a",
+      "aliases": [
+        "paraiba do sul",
+        "Bacia da Paraíba do Sul"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Atlântico Sudeste",
+      "geometry_id": "smap-aggregated-paraiba_do_sul",
+      "geometry_path": "assets/basins/v2/paraiba_do_sul.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.paraiba_do_sul"
+    },
+    {
+      "basin_id": "parana",
+      "canonical_name": "Paraná",
+      "editorial_article": "o",
+      "aliases": [
+        "parana",
+        "Bacia do Paraná"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Paraná",
+      "geometry_id": "smap-aggregated-parana",
+      "geometry_path": "assets/basins/v2/parana.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.parana"
+    },
+    {
+      "basin_id": "paranaiba",
+      "canonical_name": "Paranaíba",
+      "editorial_article": "o",
+      "aliases": [
+        "paranaiba",
+        "Bacia do Paranaíba"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Paraná",
+      "geometry_id": "smap-aggregated-paranaiba",
+      "geometry_path": "assets/basins/v2/paranaiba.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.paranaiba"
+    },
+    {
+      "basin_id": "paranapanema",
+      "canonical_name": "Paranapanema",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Paranapanema"
+      ],
+      "subsystem": "S",
+      "hydrographic_region": "Paraná",
+      "geometry_id": "smap-aggregated-paranapanema",
+      "geometry_path": "assets/basins/v2/paranapanema.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.paranapanema"
+    },
+    {
+      "basin_id": "parnaiba",
+      "canonical_name": "Parnaíba",
+      "editorial_article": "o",
+      "aliases": [
+        "parnaiba",
+        "Bacia do Parnaíba"
+      ],
+      "subsystem": "NE",
+      "hydrographic_region": "Parnaíba",
+      "geometry_id": "smap-aggregated-parnaiba",
+      "geometry_path": "assets/basins/v2/parnaiba.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.parnaiba"
+    },
+    {
+      "basin_id": "sao_francisco",
+      "canonical_name": "São Francisco",
+      "editorial_article": "o",
+      "aliases": [
+        "sao francisco",
+        "Bacia do São Francisco"
+      ],
+      "subsystem": "NE",
+      "hydrographic_region": "São Francisco",
+      "geometry_id": "smap-aggregated-sao_francisco",
+      "geometry_path": "assets/basins/v2/sao_francisco.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.sao_francisco"
+    },
+    {
+      "basin_id": "santa_maria_vitoria",
+      "canonical_name": "Santa Maria da Vitória",
+      "editorial_article": "a",
+      "aliases": [
+        "santa maria da vitoria",
+        "Bacia da Santa Maria da Vitória"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Atlântico Leste",
+      "geometry_id": "smap-aggregated-santa_maria_vitoria",
+      "geometry_path": "assets/basins/v2/santa_maria_vitoria.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.santa_maria_vitoria"
+    },
+    {
+      "basin_id": "teles_pires",
+      "canonical_name": "Teles Pires",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Teles Pires"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Tapajós",
+      "geometry_id": "smap-aggregated-teles_pires",
+      "geometry_path": "assets/basins/v2/teles_pires.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.teles_pires"
+    },
+    {
+      "basin_id": "tiete",
+      "canonical_name": "Tietê",
+      "editorial_article": "o",
+      "aliases": [
+        "tiete",
+        "Bacia do Tietê"
+      ],
+      "subsystem": "SE_CO",
+      "hydrographic_region": "Paraná",
+      "geometry_id": "smap-aggregated-tiete",
+      "geometry_path": "assets/basins/v2/tiete.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.tiete"
+    },
+    {
+      "basin_id": "tocantins",
+      "canonical_name": "Tocantins",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Tocantins"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Tocantins-Araguaia",
+      "geometry_id": "smap-aggregated-tocantins",
+      "geometry_path": "assets/basins/v2/tocantins.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.tocantins"
+    },
+    {
+      "basin_id": "uruguai",
+      "canonical_name": "Uruguai",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Uruguai"
+      ],
+      "subsystem": "S",
+      "hydrographic_region": "Uruguai",
+      "geometry_id": "smap-aggregated-uruguai",
+      "geometry_path": "assets/basins/v2/uruguai.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.uruguai"
+    },
+    {
+      "basin_id": "xingu",
+      "canonical_name": "Xingu",
+      "editorial_article": "o",
+      "aliases": [
+        "Bacia do Xingu"
+      ],
+      "subsystem": "N",
+      "hydrographic_region": "Xingu",
+      "geometry_id": "smap-aggregated-xingu",
+      "geometry_path": "assets/basins/v2/xingu.geojson",
+      "geometry_source_reference": "assets/basins/v2/manifest.json#geometries.xingu"
+    }
+  ]
+}

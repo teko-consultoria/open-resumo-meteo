@@ -1,0 +1,28 @@
+JANELA: {{window_id}}
+
+CABEÇALHO OBRIGATÓRIO
+{{expected_heading}}
+
+PAPEL DA SEÇÃO
+{{section_role}}
+
+ERRO_DO_VALIDADOR
+code: {{validation_error_code}}
+message: {{validation_error_message}}
+
+VALORES_AUTORIZADOS
+{{authorized_basin_accumulations}}
+
+TRECHO_DE_ACUMULADOS_VALIDADO
+{{authorized_rain_literal}}
+
+ESTILO_JÁ_USADO
+{{prior_sections}}
+
+TEXTO_INVALIDO
+{{invalid_text}}
+
+Corrija apenas esta seção. O contexto de estilo não autoriza novos fatos.
+
+BRIEF_JSON
+{{editorial_packet_json}}

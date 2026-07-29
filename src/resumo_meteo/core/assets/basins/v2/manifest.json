@@ -1,0 +1,509 @@
+{
+  "schema_version": 2,
+  "catalog_id": "smap-aggregated-basins-apr2025",
+  "catalog_version": "2.0.0",
+  "geometry_version": "smap-aggregated-apr2025-grid-v2",
+  "crs": "EPSG:4326",
+  "runtime_dependency_on_source_repository": false,
+  "source": {
+    "provider": "Operador Nacional do Sistema Elétrico (ONS)",
+    "url": "https://dados.ons.org.br/dataset/dados-hidrologicos-horizontes-de-bacias-hidrograficas",
+    "license": "Creative Commons Attribution",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "description": "Contornos públicos do ONS agregados conforme a configuração SMAP de abril de 2025 e fixados no mesmo conjunto operacional dos mapas gradeados.",
+    "contour_set_id": "smap_abr2025",
+    "source_kind": "operational_gridded_weather_shapefiles",
+    "source_shapefile_set_sha256": "44c3948fbf27b0394be3cca142ff4a92fd94adfe530a3fe24be7650758b03049",
+    "readme_sha256": "407cb52d03480b898b063fe983a5d4c831f54bf4d959f5af87531d2e246341f9",
+    "summary_sha256": "c4470a4fb1aa94bf49412b777fea50e2a836a9b9938aee36911a9b421c377b01",
+    "conversion": "Cada parte poligonal dos shapefiles operacionais foi transcrita para GeoJSON em WGS84, sem simplificação nem alteração de coordenadas."
+  },
+  "geometries": {
+    "amazonas_norte": {
+      "source_basin_name": "Amazonas Norte",
+      "source_shapefile": "individuais/Amazonas_Norte.shp",
+      "source_shapefile_sha256": "08aa6e522f26cf561b16a0b7379c4655818f465dbdef9429a27c618527f3baad",
+      "source_record_count": 1,
+      "source_part_count": 3,
+      "source_point_count": 3503,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/amazonas_norte.geojson",
+      "sha256": "5894649201e285c62ca18d3220468258cff5f17def311b3920291706c94e0525",
+      "geometry_type": "MultiPolygon",
+      "bbox": [
+        -60.96318949269625,
+        -4.467829938940154,
+        -52.238720512833765,
+        2.468280738141516
+      ]
+    },
+    "amazonas_sudeste": {
+      "source_basin_name": "Amazonas Sudeste",
+      "source_shapefile": "individuais/Amazonas_Sudeste.shp",
+      "source_shapefile_sha256": "d6bb8a39071c0c306e2a4b7bb5642bee8799370f47d2b61154e5153fdaddf440",
+      "source_record_count": 1,
+      "source_part_count": 4,
+      "source_point_count": 2305,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/amazonas_sudeste.geojson",
+      "sha256": "ed71578af60e6dd94bad70420569e0721f2287ec2e660a1adaad40b9909fc15d",
+      "geometry_type": "MultiPolygon",
+      "bbox": [
+        -63.62120165,
+        -15.143768642817463,
+        -58.76503749962768,
+        -8.701
+      ]
+    },
+    "araguari": {
+      "source_basin_name": "Araguari",
+      "source_shapefile": "individuais/Araguari.shp",
+      "source_shapefile_sha256": "9c37fe436e70b27b529a3f951319a4d8a5461516b5a8fdbc43eedfc4b58ba414",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 324,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/araguari.geojson",
+      "sha256": "938e0b82ace0468aa2c2e3ccf7a40981a932d6d94909a099720a6bf96f8591d2",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -53.09258070593893,
+        0.49138540732229785,
+        -51.18399207088987,
+        2.4525027429214674
+      ]
+    },
+    "capivari": {
+      "source_basin_name": "Capivari",
+      "source_shapefile": "individuais/Capivari.shp",
+      "source_shapefile_sha256": "83952bbd58003348d616d5b649031243cffde2996602f13933c53480f65e5652",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 445,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/capivari.geojson",
+      "sha256": "1c115ded678ec8d63b018b06a4154c50c2f7c3742b7a92b4864bcb80e8f37652",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -49.275295703515276,
+        -25.40232487119526,
+        -48.598772156501894,
+        -24.96695094044556
+      ]
+    },
+    "doce": {
+      "source_basin_name": "Doce",
+      "source_shapefile": "individuais/Doce.shp",
+      "source_shapefile_sha256": "50bebb21ae86c66ec16d7099132888a30cfe9ef6d7a2114fca998dc5f3f36d27",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 3234,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/doce.geojson",
+      "sha256": "9e5972133821d6fbb8e3e882d03e9715acd63b5bae893608b80084295fa7f124",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -43.82423499999998,
+        -21.18103137741822,
+        -40.90471815907586,
+        -17.75878264944791
+      ]
+    },
+    "grande": {
+      "source_basin_name": "Grande",
+      "source_shapefile": "individuais/Grande.shp",
+      "source_shapefile_sha256": "becf3d62c2b2e790c2d4014e71a37ae02eed0c0b53b44b4e31d3ee9f53b09196",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 3517,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/grande.geojson",
+      "sha256": "ffa07683217e507d8fa8b6c20e886c875c5dced193d4334bf40d270f200e5967",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -50.39978249,
+        -22.88802708,
+        -43.58788113050618,
+        -19.40193125999999
+      ]
+    },
+    "iguacu": {
+      "source_basin_name": "Iguaçu",
+      "source_shapefile": "individuais/Iguacu.shp",
+      "source_shapefile_sha256": "74fa1cf3c8f77fcc3341e71140f1ac895401ff72121b6785cd103694458632c2",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 7555,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/iguacu.geojson",
+      "sha256": "c78cf7207a9ac872492255822a7af9f00d9058069ec1272c88c3c81f30274539",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -53.71694166,
+        -26.851790042703485,
+        -48.95247373096885,
+        -24.94139167
+      ]
+    },
+    "itabapoana": {
+      "source_basin_name": "Itabapoana",
+      "source_shapefile": "individuais/Itabapoana.shp",
+      "source_shapefile_sha256": "20bbe05de75a9c1306fbeef5e874fc60d7555cb9195ae083c0130e720bc8d241",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 802,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/itabapoana.geojson",
+      "sha256": "2a3273f6c565d16b30ceb222f43306b4924ec64de03bc9f5d28d15d77625268d",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -42.08677685327796,
+        -20.970368587632258,
+        -41.60122126234217,
+        -20.397783031875182
+      ]
+    },
+    "itajai_acu": {
+      "source_basin_name": "Itajaí-Açu",
+      "source_shapefile": "individuais/Itajai_Acu.shp",
+      "source_shapefile_sha256": "b1f2cb9d456ea1cf24e615f1394ccda58c8233251113fed774d3ff69771160f8",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 795,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/itajai_acu.geojson",
+      "sha256": "93b61eafb378d099f93a458146fc61f6013bbc56ece6cb4b38b2faf6047da0c1",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -50.353507,
+        -27.876007,
+        -49.146608,
+        -26.78704
+      ]
+    },
+    "jacui": {
+      "source_basin_name": "Jacuí",
+      "source_shapefile": "individuais/Jacui.shp",
+      "source_shapefile_sha256": "bec7cc4b982763a4d05b68552051febf99ae365968d55371e09ae29307bd9af3",
+      "source_record_count": 1,
+      "source_part_count": 2,
+      "source_point_count": 943,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/jacui.geojson",
+      "sha256": "ebc25a0d07827e992ddeaec48b71d444e7d7dae9b643380aaede2c378395750e",
+      "geometry_type": "MultiPolygon",
+      "bbox": [
+        -55.05218573,
+        -29.488384387809575,
+        -49.94451713110169,
+        -27.98045479
+      ]
+    },
+    "jequitinhonha": {
+      "source_basin_name": "Jequitinhonha",
+      "source_shapefile": "individuais/Jequitinhonha.shp",
+      "source_shapefile_sha256": "41be29f56cb35f18dcfa0b08515aa9bcf47968b5ca785f09126bb085c64cfc07",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 3355,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/jequitinhonha.geojson",
+      "sha256": "48479885355b4a405e0af8575fcf3ef30b5cdb33896c3daf49cd950d6f137780",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -43.813769,
+        -18.61561783877037,
+        -39.50746343873904,
+        -15.64545511074004
+      ]
+    },
+    "madeira": {
+      "source_basin_name": "Madeira",
+      "source_shapefile": "individuais/Madeira.shp",
+      "source_shapefile_sha256": "3fa451856f1e4a919975d3f9dda511e9642263885c9936eb812af9efeebac944",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 1605,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/madeira.geojson",
+      "sha256": "e0563f8228707633d4285bb0ef80a3c4060847b349d7d30b97547549e955c8c4",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -72.41,
+        -20.486,
+        -58.85753729617733,
+        -8.738430352009175
+      ]
+    },
+    "mucuri": {
+      "source_basin_name": "Mucuri",
+      "source_shapefile": "individuais/Mucuri.shp",
+      "source_shapefile_sha256": "19a07d6e78bdba62c55ba4e5a57fd2bd4e1459fce30d4c620233f886afee14ba",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 1614,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/mucuri.geojson",
+      "sha256": "ae7286d7b1dc70b2afd4e23cced402505db141f5c7aea23f954aea45da239cc9",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -42.06038543951981,
+        -18.040112616675966,
+        -40.19719461441292,
+        -16.82120808800302
+      ]
+    },
+    "paraguacu": {
+      "source_basin_name": "Paraguaçu",
+      "source_shapefile": "individuais/Paraguacu.shp",
+      "source_shapefile_sha256": "7f1aeeb3764f13d006560978d3f0ad25221d15bb5ed59d6da907e68e6b8f5868",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 1624,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/paraguacu.geojson",
+      "sha256": "289d4efd43ee3e640893a519c4d5f91e87dd73fa382f9eceb78d032c86e456a6",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -42.03812899999999,
+        -13.60246484370691,
+        -38.95535714396494,
+        -11.27137484048175
+      ]
+    },
+    "paraguai": {
+      "source_basin_name": "Paraguai",
+      "source_shapefile": "individuais/Paraguai.shp",
+      "source_shapefile_sha256": "092e54bf3df3ecf6152fab59c47d3ce3a5048c019986c944c3b405ab77a85b7c",
+      "source_record_count": 1,
+      "source_part_count": 3,
+      "source_point_count": 1730,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/paraguai.geojson",
+      "sha256": "3192aed41b9da66ece5adc62eda0c2bd490fd9c3ad3fcde3a2598b270a8b9d45",
+      "geometry_type": "MultiPolygon",
+      "bbox": [
+        -58.8834795382516,
+        -17.764965989124452,
+        -53.42899822764983,
+        -14.472259334623905
+      ]
+    },
+    "paraiba_do_sul": {
+      "source_basin_name": "Paraíba do Sul",
+      "source_shapefile": "individuais/Paraiba_do_Sul.shp",
+      "source_shapefile_sha256": "ccb5fd90f400804b3027649c0d77e3816ff550133e9b77bb5c061cde3cb13f9d",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 6632,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/paraiba_do_sul.geojson",
+      "sha256": "7543679529f09e4270786b4be8c603b88f45d75f82bf5f121d3dc3967c108ad3",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -46.4169,
+        -23.63875992850946,
+        -42.39791666664399,
+        -20.86124999995377
+      ]
+    },
+    "parana": {
+      "source_basin_name": "Paraná",
+      "source_shapefile": "individuais/Parana.shp",
+      "source_shapefile_sha256": "ed957806a6e3483055d1177a062c867311324fff88879993961b494a46d4dd9e",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 4464,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/parana.geojson",
+      "sha256": "9b0f916ca92f9036598a8965a8de63c7d82f805a27963bfca2aa95c70abd1074",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -55.94171142205596,
+        -25.58270263299346,
+        -49.43693330549126,
+        -18.229850643879573
+      ]
+    },
+    "paranaiba": {
+      "source_basin_name": "Paranaíba",
+      "source_shapefile": "individuais/Paranaiba.shp",
+      "source_shapefile_sha256": "399f74f25647c9483ece37249361ed92840cdc6787a64c05c8411e7be793cece",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 7904,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/paranaiba.geojson",
+      "sha256": "fcf29acffe746678c0e1828f96f57535ca4fae8a757bffc0394b3609cb5a6631",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -53.19816768223213,
+        -20.17358365263294,
+        -46.06629491786468,
+        -15.45297616303473
+      ]
+    },
+    "paranapanema": {
+      "source_basin_name": "Paranapanema",
+      "source_shapefile": "individuais/Paranapanema.shp",
+      "source_shapefile_sha256": "6afe1b6ef89bfcca60adf803a9847c8d776bfc1983b37a34b4ef597865790946",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 6461,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/paranapanema.geojson",
+      "sha256": "c32a8fc710eb1d1a530f1def71d59d8b80e7ee5cd35490ec21a3c4f2912e06c2",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -52.915505651417796,
+        -25.6557182860018,
+        -47.378973765256546,
+        -22.136750159880837
+      ]
+    },
+    "parnaiba": {
+      "source_basin_name": "Parnaíba",
+      "source_shapefile": "individuais/Parnaiba.shp",
+      "source_shapefile_sha256": "d302ff68059b9639c0a4a260fda456a25c57c13b5ce45f416668b72aa36671bb",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 2128,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/parnaiba.geojson",
+      "sha256": "1385301d716d251345062fc810ca5509629e109ae9c33a7b243004bbb794ea6c",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -47.06104899999998,
+        -10.26885,
+        -43.47644981901789,
+        -6.532901992424161
+      ]
+    },
+    "sao_francisco": {
+      "source_basin_name": "São Francisco",
+      "source_shapefile": "individuais/Sao_Francisco.shp",
+      "source_shapefile_sha256": "8b57d50fcd63d251c5d3b4b0070176a11cbf3cffac110b996c8e76bce7c85ea8",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 12189,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/sao_francisco.geojson",
+      "sha256": "7176f341335b74b92d0d9e876c0f5515a7583e7b11a91566fcb8594c196c4e5f",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -47.640433770115266,
+        -20.930182815143894,
+        -36.64627860194715,
+        -7.270952910334714
+      ]
+    },
+    "santa_maria_vitoria": {
+      "source_basin_name": "Sta. Maria da Vitória",
+      "source_shapefile": "individuais/Sta_Maria_da_Vitoria.shp",
+      "source_shapefile_sha256": "310a419ef6e8313cada241c4e9a48a1dbc9c61c2872e63fc8276d4c4fd2b63ec",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 1746,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/santa_maria_vitoria.geojson",
+      "sha256": "ac6dbced148384df4ce59a22e1a4fcc79afc829f6b6036ab8453bbb18810faf3",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -41.035416666678465,
+        -20.227916666742605,
+        -40.56124999985381,
+        -19.94624999998209
+      ]
+    },
+    "teles_pires": {
+      "source_basin_name": "Teles Pires",
+      "source_shapefile": "individuais/Teles_Pires.shp",
+      "source_shapefile_sha256": "57c1a30753eae4f0fd9f3740bc1dd81128d558808e1e922118581c48f86d5bbe",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 6838,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/teles_pires.geojson",
+      "sha256": "4609963bb45be1c6988114d95f0d795b58063a9c98042aaebc5847c977a8bcc0",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -60.10655794916497,
+        -14.9199699855331,
+        -53.829918,
+        -2.387017204767921
+      ]
+    },
+    "tiete": {
+      "source_basin_name": "Tietê",
+      "source_shapefile": "individuais/Tiete.shp",
+      "source_shapefile_sha256": "2773b7de19a92ba645b7e8b3e77b53633c14d195ff9241d6af2d171b646d4a4d",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 3385,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/tiete.geojson",
+      "sha256": "78c77fedb486887f56242df62180cfcf4784e265305091fcf5b25591e0c20908",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -50.34339538662739,
+        -23.952455209017366,
+        -45.63740270731008,
+        -20.694680711527898
+      ]
+    },
+    "tocantins": {
+      "source_basin_name": "Tocantins",
+      "source_shapefile": "individuais/Tocantins.shp",
+      "source_shapefile_sha256": "e44867baa65b53a09587ba73b7fa0646cf9be3d1c10d1b7ee4a70894aa591a6d",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 11116,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/tocantins.geojson",
+      "sha256": "bc40e9bd1bec321b52ca201a0f0e115e6bd2f7c5fcf1f4e80ce31e2c563a9c29",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -55.40148947930243,
+        -18.08649025366944,
+        -45.69628947930254,
+        -3.686290253669437
+      ]
+    },
+    "uruguai": {
+      "source_basin_name": "Uruguai",
+      "source_shapefile": "individuais/Uruguai.shp",
+      "source_shapefile_sha256": "ece8174d6b9aa53f04a429daf4941b1cc5c1e85e35f0d14babb96b7784d35fcb",
+      "source_record_count": 1,
+      "source_part_count": 2,
+      "source_point_count": 1093,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/uruguai.geojson",
+      "sha256": "691ff9036f750e85afe740bbb74409a9c4a64d34881f6c08de5549b94ca2f382",
+      "geometry_type": "MultiPolygon",
+      "bbox": [
+        -55.05218573,
+        -29.06738614,
+        -49.27806097,
+        -26.39901808
+      ]
+    },
+    "xingu": {
+      "source_basin_name": "Xingu",
+      "source_shapefile": "individuais/Xingu.shp",
+      "source_shapefile_sha256": "03da4c81bc566b438ee138ff8cbe3de9f7f57014db4ea7f8557961f371347be1",
+      "source_record_count": 1,
+      "source_part_count": 1,
+      "source_point_count": 9912,
+      "interior_ring_count": 0,
+      "path": "assets/basins/v2/xingu.geojson",
+      "sha256": "e8b6982d29343c58afadea8dd657cbf77f7586f798bb9fd08d99bf3b52def792",
+      "geometry_type": "Polygon",
+      "bbox": [
+        -55.62621999999993,
+        -14.911544438087331,
+        -50.34078107759094,
+        -3.0262557593788415
+      ]
+    }
+  }
+}
