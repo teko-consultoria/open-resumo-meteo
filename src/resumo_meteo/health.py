@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import asdict, dataclass
 
 from sqlalchemy import text
@@ -10,7 +11,7 @@ from .config import Settings
 from .core.basins import CANONICAL_BASIN_IDS
 from .core.climatology import load_climatology_bundle
 from .core.geometry_loader import load_geometry_catalog
-from .core.openai_client import PROMPT_BUNDLE, PROMPT_DIRECTORY
+from .core.openai_client import PROMPT_BUNDLE, PROMPT_BUNDLE_SHA256, PROMPT_DIRECTORY
 from .core.summary_scope import DEFAULT_SUMMARY_BASIN_SCOPE
 from .core.synoptic_regions import load_temperature_climatology
 from .pipeline.packet_builder import DEFAULT_CLIMATOLOGY_PATH
@@ -76,12 +77,24 @@ def run_health_checks(settings: Settings, *, include_database: bool = True) -> t
     expected_prompt_files = set(PROMPT_BUNDLE.values())
     missing_prompt_files = sorted(expected_prompt_files - prompt_files)
     unexpected_prompt_files = sorted(prompt_files - expected_prompt_files)
-    prompts_ok = not missing_prompt_files and not unexpected_prompt_files
+    checksum_mismatches = sorted(
+        role
+        for role, filename in PROMPT_BUNDLE.items()
+        if (path := PROMPT_DIRECTORY / filename).is_file()
+        and hashlib.sha256(path.read_bytes()).hexdigest() != PROMPT_BUNDLE_SHA256[role]
+    )
+    prompts_ok = (
+        not missing_prompt_files
+        and not unexpected_prompt_files
+        and not checksum_mismatches
+    )
     prompt_detail = f"{len(prompt_files)}/{len(expected_prompt_files)} arquivos vigentes"
     if missing_prompt_files:
         prompt_detail += f"; ausentes={','.join(missing_prompt_files)}"
     if unexpected_prompt_files:
         prompt_detail += f"; inesperados={','.join(unexpected_prompt_files)}"
+    if checksum_mismatches:
+        prompt_detail += f"; checksum_divergente={','.join(checksum_mismatches)}"
     checks.append(HealthCheck("editorial_prompts", prompts_ok, prompt_detail))
 
     try:

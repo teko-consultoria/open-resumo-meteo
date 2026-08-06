@@ -91,7 +91,7 @@ def test_cli_init_db_and_status_report_persisted_rows_without_network(
         cutoff_utc=CUTOFF,
         input_fingerprint="a" * 64,
         schema_version="2",
-        prompt_version="weather-summary-editorial-v27",
+        prompt_version="weather-summary-editorial-v28",
         llm_provider="test-provider",
         llm_model="test-model",
         status="blocked",

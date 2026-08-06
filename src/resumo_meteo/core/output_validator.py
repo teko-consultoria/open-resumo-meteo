@@ -73,6 +73,20 @@ _INVALID_NUMBER_AGREEMENT = re.compile(
     r"(?:permanecem|mantêm)\s+(?:seco|seca))\b",
     re.IGNORECASE,
 )
+_AMBIGUOUS_DRY_TO_WET_TRANSITION = re.compile(
+    r"\b(?:transi[cç][aã]o|transita\w*|passa\w*|evolu\w*|mudan[cç]a)\b"
+    r"[^.;!?]{0,100}\b(?:sec[oa]s?|pouca\s+chuva)\b"
+    r"[^.;!?]{0,100}\b(?:mais\s+[uú]mid[oa]s?|mais\s+chuv\w*|cen[aá]rio\s+[uú]mid\w*)\b",
+    re.IGNORECASE,
+)
+_EXPLICIT_OBSERVED_ANTECEDENT = re.compile(
+    r"\b(?:observad\w*|antecedent\w*|dias?\s+anteriores?)\b",
+    re.IGNORECASE,
+)
+_EXPLICIT_FIRST_FORECAST_DAY = re.compile(
+    r"\b(?:j[aá]\s+)?no\s+primeiro\s+dia(?:\s+(?:da|de)\s+p[eê]ntada)?\b",
+    re.IGNORECASE,
+)
 MIN_PARAGRAPH_WORDS = 75
 MAX_PARAGRAPH_WORDS = 170
 # Editorial values are already rounded before the language-model boundary.
@@ -1102,6 +1116,71 @@ def _validate_required_transition_timing(
             )
 
 
+def _validate_antecedent_transition_language(
+    paragraph: str,
+    packet: AnalysisPacket,
+    window_id: WindowId,
+) -> None:
+    if window_id != WindowId.P1:
+        return
+
+    qualifying_basins = []
+    for basin in packet.basins:
+        if basin.observed is None or basin.windows is None:
+            continue
+        antecedent = basin.observed.rain_5d_mm
+        opinion = basin.windows.p1.opinion
+        forecast_p1 = (
+            float(opinion.rounded_mm)
+            if opinion.rounded_mm is not None
+            else sum(float(value) for value in opinion.range_mm) / len(opinion.range_mm)
+            if opinion.range_mm
+            else None
+        )
+        daily_timing = basin.windows.p1.daily_timing
+        first_day_mm = (
+            daily_timing[0].deterministic_center_mm
+            if daily_timing
+            else None
+        )
+        if (
+            antecedent is not None
+            and float(antecedent) < 15.0
+            and forecast_p1 is not None
+            and forecast_p1 >= 25.0
+            and first_day_mm is not None
+            and float(first_day_mm) >= 5.0
+        ):
+            qualifying_basins.append(basin)
+
+    if not qualifying_basins:
+        return
+
+    for clause in re.split(r"[.;!?]", paragraph):
+        if not _AMBIGUOUS_DRY_TO_WET_TRANSITION.search(clause):
+            continue
+        if not any(
+            re.search(
+                rf"(?<!\w){re.escape(basin.name)}(?!\w)",
+                clause,
+                re.IGNORECASE,
+            )
+            for basin in qualifying_basins
+        ):
+            continue
+        if (
+            _EXPLICIT_OBSERVED_ANTECEDENT.search(clause)
+            and _EXPLICIT_FIRST_FORECAST_DAY.search(clause)
+        ):
+            continue
+        raise SummaryValidationError(
+            "ambiguous_antecedent_transition",
+            "a dry-to-wet comparison with rain on the first forecast day must "
+            "identify the observed antecedent and say that precipitation returns "
+            "already on the first day of the pentad",
+        )
+
+
 def _validate_model_evidence(
     paragraph: str,
     packet: AnalysisPacket,
@@ -1275,6 +1354,7 @@ def _validate_section(
         )
     _validate_point_mean_distinction(paragraph)
     _validate_supported_mm_values(packet, window_id, paragraph)
+    _validate_antecedent_transition_language(paragraph, packet, window_id)
     _validate_synoptic_evidence(paragraph, packet, window_id)
     _validate_required_transition_timing(paragraph, packet, window_id)
     _validate_model_evidence(paragraph, packet, window_id)

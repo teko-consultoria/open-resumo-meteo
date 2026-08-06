@@ -19,12 +19,18 @@ from pydantic import Field
 
 from .schema import AnalysisPacket, StrictModel, WindowId
 
-PROMPT_VERSION = "weather-summary-editorial-v27"
+PROMPT_VERSION = "weather-summary-editorial-v28"
 PROMPT_BUNDLE = {
-    "window_system": "system_window_v15.txt",
+    "window_system": "system_window_v16.txt",
     "window_execution": "execution_window_v9.txt",
-    "window_repair_system": "system_repair_window_v1.txt",
+    "window_repair_system": "system_repair_window_v2.txt",
     "window_repair_execution": "execution_repair_window_v1.txt",
+}
+PROMPT_BUNDLE_SHA256 = {
+    "window_system": "ef8fd288cf76d3b2660bbdf8f4f8fe00d48f06a19ae9fde072a2351ae28886a8",
+    "window_execution": "b304e62c22ab9b1d5e1d557fa4d2193b8a0362d42308159cef6589ad00d1e615",
+    "window_repair_system": "0570e40d2f9e1c3098b6727aa0ffd6f5c08a8246e3949592228fa3e383c7dd46",
+    "window_repair_execution": "dbc9993a505e63065cbeb54fce0bcee5cf40878204c352caa6c52219879dd3a3",
 }
 DEFAULT_MODEL = "sabia-4"
 DEFAULT_BASE_URL = "https://chat.maritaca.ai/api"
@@ -235,6 +241,66 @@ def _daily_timing_pattern(values: list[float | None]) -> str:
     if mean_index > midpoint + 0.5:
         return "concentrado_na_metade_final"
     return "intermitente_no_meio_da_janela"
+
+
+def _antecedent_to_p1_context(basin: Any, forecast_p1: float | None) -> dict[str, object]:
+    observed = basin.observed
+    antecedent = (
+        float(observed.rain_5d_mm)
+        if observed is not None and observed.rain_5d_mm is not None
+        else None
+    )
+    if antecedent is not None and antecedent >= 25 and forecast_p1 is not None:
+        transition = (
+            "periodo_chuvoso_observado_persiste_na_primeira_pentada"
+            if forecast_p1 >= 25
+            else "periodo_chuvoso_observado_para_primeira_pentada_mais_seca"
+            if forecast_p1 < 15
+            else "sem_transicao_material"
+        )
+    elif (
+        antecedent is not None
+        and antecedent < 15
+        and forecast_p1 is not None
+        and forecast_p1 >= 25
+    ):
+        transition = "pouca_chuva_observada_para_primeira_pentada_mais_umida"
+    else:
+        transition = "sem_transicao_material"
+
+    daily_timing = list(basin.windows.p1.daily_timing) if basin.windows is not None else []
+    first_material_index = next(
+        (
+            index
+            for index, item in enumerate(daily_timing)
+            if item.deterministic_center_mm is not None
+            and float(item.deterministic_center_mm) >= 5.0
+        ),
+        None,
+    )
+    first_material_day = (
+        daily_timing[first_material_index]
+        if first_material_index is not None
+        else None
+    )
+    if not daily_timing:
+        onset = "indisponivel"
+    elif first_material_index is None:
+        onset = "sem_sinal_diario_material"
+    elif first_material_index == 0:
+        onset = "primeiro_dia"
+    else:
+        onset = "apos_o_primeiro_dia"
+    return {
+        "comparison_scope": "cinco_dias_observados_anteriores_versus_primeira_pentada",
+        "transition": transition,
+        "forecast_onset": onset,
+        "first_material_forecast_day": (
+            first_material_day.date.strftime("%d/%m")
+            if first_material_day is not None
+            else None
+        ),
+    }
 
 
 def _selected_basin_windows(
@@ -619,39 +685,30 @@ def _compact_forecast_evolution(packet: AnalysisPacket, window_ids: tuple[Window
                     if item.deterministic_center_mm is not None
                     else None
                 )
-        observed = basin.observed
         forecast_p1 = window_values.get("p1")
-        antecedent = float(observed.rain_5d_mm) if observed and observed.rain_5d_mm is not None else None
-        transition = (
-            "padrão_úmido_persiste"
-            if antecedent is not None and antecedent >= 25 and forecast_p1 is not None and forecast_p1 >= 25
-            else "úmido_para_mais_seco"
-            if antecedent is not None and antecedent >= 25 and forecast_p1 is not None and forecast_p1 < 15
-            else "seco_para_mais_úmido"
-            if antecedent is not None and antecedent < 15 and forecast_p1 is not None and forecast_p1 >= 25
-            else "sem_transição_material"
-        )
-        rows.append(
-            {
-                "basin_id": basin.basin_id,
-                "ref": basin.editorial_reference,
-                "window_regimes": {
-                    key: _rain_regime(value, days=(4 if key == "p3" else 5))
-                    for key, value in window_values.items()
-                },
-                "requested_daily_timing_regimes": {
-                    selected.value: daily_by_window[selected.value]
-                    for selected in window_ids
-                },
-                "timing_pattern_by_window": {
-                    selected.value: _daily_timing_pattern(
-                        daily_values_by_window[selected.value]
-                    )
-                    for selected in (WindowId.P1, WindowId.P2, WindowId.P3)
-                },
-                "antecedent_to_forecast": transition,
-            }
-        )
+        row = {
+            "basin_id": basin.basin_id,
+            "ref": basin.editorial_reference,
+            "window_regimes": {
+                key: _rain_regime(value, days=(4 if key == "p3" else 5))
+                for key, value in window_values.items()
+            },
+            "requested_daily_timing_regimes": {
+                selected.value: daily_by_window[selected.value]
+                for selected in window_ids
+            },
+            "timing_pattern_by_window": {
+                selected.value: _daily_timing_pattern(
+                    daily_values_by_window[selected.value]
+                )
+                for selected in (WindowId.P1, WindowId.P2, WindowId.P3)
+            },
+        }
+        if WindowId.P1 in window_ids:
+            antecedent_to_p1 = _antecedent_to_p1_context(basin, forecast_p1)
+            if antecedent_to_p1["transition"] != "sem_transicao_material":
+                row["antecedent_to_p1"] = antecedent_to_p1
+        rows.append(row)
     return {
         "rows": rows,
     }
@@ -743,7 +800,7 @@ def compact_editorial_packet(
     window_ids = (selected_window_id,)
     synoptic_sequence = _compact_synoptic_sequence(packet)
     return {
-        "schema_version": "weather-summary-editorial-brief.v7",
+        "schema_version": "weather-summary-editorial-brief.v8",
         "issue": {
             "date": packet.issue.date.isoformat(),
             "time": packet.issue.time.isoformat(timespec="minutes"),
@@ -1298,6 +1355,8 @@ __all__ = [
     "MissingOpenAIAPIKey",
     "OpenAIEditorialResult",
     "OpenAIUsage",
+    "PROMPT_BUNDLE",
+    "PROMPT_BUNDLE_SHA256",
     "PROMPT_VERSION",
     "WeatherSummaryGenerationError",
     "WeatherSummaryOpenAIClient",

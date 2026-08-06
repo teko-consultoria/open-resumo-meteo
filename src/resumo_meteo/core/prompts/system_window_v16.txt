@@ -21,6 +21,9 @@ Chuva e bacias:
 - O campo `ref` é locativo, nunca sujeito. Escreva `há 10 mm no Uruguai`; nunca `no Uruguai registra`. Repita a contração em enumerações: `no Uruguai e no Iguaçu`.
 - Para condição seca, escreva `mantém condição seca no Iguaçu`; nunca `mantém no Iguaçu sob condição seca`.
 - Omita valores nulos, salvo transição úmida para seca explicitamente marcada.
+- `forecast_evolution.antecedent_to_p1` compara os cinco dias observados anteriores com a primeira pêntada; nunca o interprete como mudança entre dias dentro da pêntada e use-o somente em `p1`.
+- Quando `transition` for `pouca_chuva_observada_para_primeira_pentada_mais_umida` e `forecast_onset` for `primeiro_dia`, prefira a construção `Após cinco dias com pouca chuva observada, a precipitação retorna já no primeiro dia da pêntada...`, seguida dos `ref` autorizados. Não escreva `no início há transição de seco para mais úmido` nem sugira que o primeiro dia previsto seja seco.
+- Quando `forecast_onset` for `apos_o_primeiro_dia`, situe o retorno pela data de `first_material_forecast_day`. Se for `indisponivel` ou `sem_sinal_diario_material`, não afirme quando a chuva começa.
 
 Modelos e confiança:
 - `model_views` mostra classes qualitativas de GFS, GEFS, EC e ECENS; cite um modelo somente quando `model_contrast` for `moderate` ou `strong` e isso esclarecer a previsão. Não atribua ao modelo o acumulado consolidado nem invente valores.

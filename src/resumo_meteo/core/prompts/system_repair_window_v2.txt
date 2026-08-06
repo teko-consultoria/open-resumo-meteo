@@ -4,4 +4,6 @@ Retorne exatamente o cabeçalho exigido e um único parágrafo em linha única, 
 
 Todo valor em mm deve ser copiado do TRECHO_DE_ACUMULADOS_VALIDADO, mantendo a associação com a bacia. Não invente valores, datas, bacias, mecanismos, fontes ou metadados. Não escreva `convecção` ou `chuva convectiva` se não estiverem autorizadas no BRIEF_JSON. O `ref` da bacia é locativo: escreva `há 20 mm no Jacuí`, nunca `no Jacuí registra`; para seca, use `mantém condição seca no Jacuí`.
 
+O campo `forecast_evolution.antecedent_to_p1` compara os cinco dias observados anteriores com a primeira pêntada, não dias internos da previsão. Quando ele indicar `pouca_chuva_observada_para_primeira_pentada_mais_umida` com `forecast_onset` igual a `primeiro_dia`, escreva de forma equivalente a `Após cinco dias com pouca chuva observada, a precipitação retorna já no primeiro dia da pêntada...`; não use uma transição temporal ambígua dentro da janela.
+
 Em contraste entre modelos, cite somente GFS, GEFS, EC ou ECENS quando o brief o autorizar. Prefira `cenário mais seco` ou `cenário mais úmido`; nunca use `solução`, `família` ou `confiança mista`. Não use bullets, tabela, Markdown, notas ou explicação da correção.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,7 @@ from pydantic import ValidationError
 import resumo_meteo.core as weather_summary_core
 from resumo_meteo.core.openai_client import (
     PROMPT_BUNDLE,
+    PROMPT_BUNDLE_SHA256,
     PROMPT_VERSION,
     MissingOpenAIAPIKey,
     WeatherSummaryOpenAIClient,
@@ -256,12 +258,19 @@ class OpenAIEditorialClientTests(TestCase):
         self.assertIn("aumento da temperatura", load_window_system_prompt())
         self.assertIn("narrativa espacial e temporal", load_window_system_prompt())
         self.assertIn("três a cinco frases", load_window_system_prompt())
-        self.assertEqual(PROMPT_VERSION, "weather-summary-editorial-v27")
+        self.assertIn("retorna já no primeiro dia", load_window_system_prompt())
+        self.assertEqual(PROMPT_VERSION, "weather-summary-editorial-v28")
 
     def test_only_current_prompt_bundle_is_distributed(self):
         prompt_directory = WEATHER_SUMMARY_DIR / "prompts"
         prompt_files = {path.name for path in prompt_directory.glob("*.txt")}
         self.assertEqual(prompt_files, set(PROMPT_BUNDLE.values()))
+        self.assertEqual(set(PROMPT_BUNDLE_SHA256), set(PROMPT_BUNDLE))
+        for role, filename in PROMPT_BUNDLE.items():
+            self.assertEqual(
+                hashlib.sha256((prompt_directory / filename).read_bytes()).hexdigest(),
+                PROMPT_BUNDLE_SHA256[role],
+            )
 
     def test_compact_editorial_packet_excludes_raw_audit_sources(self):
         packet = load_packet()
@@ -387,6 +396,53 @@ class OpenAIEditorialClientTests(TestCase):
         self.assertIn("synoptic_sequence", compact)
         self.assertLess(len(message), 16500)
 
+    def test_p1_brief_distinguishes_observed_antecedent_from_forecast_onset(self):
+        payload = load_fixture_dict()
+        basin = next(item for item in payload["basins"] if item["basin_id"] == "jacui")
+        basin["observed"]["rain_5d_mm"] = 4.0
+        basin["windows"]["p1"]["daily_timing"] = [
+            {
+                "date": f"2026-07-{day:02d}",
+                "gfs_basin_mean_mm": 9.0,
+                "ec_basin_mean_mm": 9.0,
+                "deterministic_center_mm": 9.0,
+                "family_difference_mm": 0.0,
+                "confidence": "high",
+            }
+            for day in range(11, 16)
+        ]
+        packet = AnalysisPacket.model_validate(payload)
+
+        compact = compact_editorial_packet(packet, WindowId.P1)
+        evolution = next(
+            item
+            for item in compact["forecast_evolution"]["rows"]
+            if item["basin_id"] == "jacui"
+        )
+
+        self.assertEqual(compact["schema_version"], "weather-summary-editorial-brief.v8")
+        self.assertEqual(
+            evolution["antecedent_to_p1"],
+            {
+                "comparison_scope": (
+                    "cinco_dias_observados_anteriores_versus_primeira_pentada"
+                ),
+                "transition": (
+                    "pouca_chuva_observada_para_primeira_pentada_mais_umida"
+                ),
+                "forecast_onset": "primeiro_dia",
+                "first_material_forecast_day": "11/07",
+            },
+        )
+
+        p2 = compact_editorial_packet(packet, WindowId.P2)
+        self.assertTrue(
+            all(
+                "antecedent_to_p1" not in item
+                for item in p2["forecast_evolution"]["rows"]
+            )
+        )
+
     def test_responses_api_request_disables_storage_and_returns_audit_fields(self):
         fake_responses = self.FakeResponses()
         fake_client = SimpleNamespace(responses=fake_responses)
@@ -447,6 +503,23 @@ class SummaryOutputValidatorTests(TestCase):
             validate_summary_output(text, self.packet)
         self.assertEqual(raised.exception.code, code)
 
+    def packet_with_rain_on_first_day_after_dry_antecedent(self) -> AnalysisPacket:
+        payload = self.packet.model_dump(mode="json")
+        basin = next(item for item in payload["basins"] if item["basin_id"] == "jacui")
+        basin["observed"]["rain_5d_mm"] = 4.0
+        basin["windows"]["p1"]["daily_timing"] = [
+            {
+                "date": f"2026-07-{day:02d}",
+                "gfs_basin_mean_mm": 9.0,
+                "ec_basin_mean_mm": 9.0,
+                "deterministic_center_mm": 9.0,
+                "family_difference_mm": 0.0,
+                "confidence": "high",
+            }
+            for day in range(11, 16)
+        ]
+        return AnalysisPacket.model_validate(payload)
+
     def test_accepts_exactly_three_sections_with_one_paragraph_each(self):
         validated = validate_summary_output(VALID_OUTPUT, self.packet)
 
@@ -456,6 +529,37 @@ class SummaryOutputValidatorTests(TestCase):
         self.assertEqual(validated.mm_support_tolerance, MM_SUPPORT_TOLERANCE)
         self.assertIn("Uruguai", validated.sections[0].canonical_basin_names)
         self.assertEqual(validated.sections[0].mm_values, [20.0, 25.0])
+
+    def test_rejects_ambiguous_observed_to_forecast_transition_on_first_day(self):
+        packet = self.packet_with_rain_on_first_day_after_dry_antecedent()
+        ambiguous = VALID_OUTPUT.replace(
+            "Um cavado organiza a chuva no Sul,",
+            (
+                "No início do período, há transição de condições secas para um "
+                "cenário mais úmido no Jacuí. Um cavado organiza a chuva no Sul,"
+            ),
+            1,
+        )
+
+        with self.assertRaises(SummaryValidationError) as raised:
+            validate_summary_output(ambiguous, packet)
+
+        self.assertEqual(raised.exception.code, "ambiguous_antecedent_transition")
+
+    def test_accepts_explicit_observed_antecedent_and_first_forecast_day(self):
+        packet = self.packet_with_rain_on_first_day_after_dry_antecedent()
+        explicit = VALID_OUTPUT.replace(
+            "Um cavado organiza a chuva no Sul,",
+            (
+                "Após cinco dias com pouca chuva observada, a precipitação retorna "
+                "já no primeiro dia da pêntada no Jacuí. Um cavado organiza a chuva no Sul,"
+            ),
+            1,
+        )
+
+        validated = validate_summary_output(explicit, packet)
+
+        self.assertIn("retorna já no primeiro dia da pêntada no Jacuí", validated.text)
 
     def test_rejects_preamble_footer_wrong_dates_and_extra_paragraph(self):
         variants = (
