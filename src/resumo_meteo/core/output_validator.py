@@ -122,6 +122,13 @@ _NAMED_SYNOPTIC_MECHANISM = re.compile(
     r"(?:atividade|instabilidade|precipitação|chuva)\s+convectiv\w*)\b",
     re.IGNORECASE,
 )
+_UNSUPPORTED_GENERIC_SYNOPTIC_CAUSE = re.compile(
+    r"\b(?:circula[cç][aã]o(?:\s+atmosf[eé]rica)?(?:\s+(?:em|de|na|no))?\s+"
+    r"(?:grande|larga)\s+escala|padr[aã]o\s+(?:atmosf[eé]rico\s+)?de\s+"
+    r"circula[cç][aã]o|persist[eê]ncia\s+(?:de|da)\s+umidade|"
+    r"(?:fluxo|transporte)\s+de\s+umidade|escoamento\s+[uú]mido)\b",
+    re.IGNORECASE,
+)
 _MECHANISM_ABSENCE = re.compile(
     r"\b(?:sem|ausência\s+de|não\s+(?:há|existe|se\s+observa))\b"
     r"[^.;!?]{0,70}\b(?:mecanismos?\s+sinóticos?|sistemas?\s+sinóticos?(?:\s+estruturados?)?|sistemas?\s+forçantes?|"
@@ -214,6 +221,25 @@ _VERTICAL_THERMAL_INVERSION = re.compile(r"\binvers[aã]o\s+t[eé]rmica\b", re.I
 _INCOMPLETE_ENDING = re.compile(
     r"\b(?:dado\s+qu?|visto\s+qu?|uma\s+vez\s+qu?|embora|porque|pois|"
     r"enquanto|quando|que|qu)\s*[.!?]?$",
+    re.IGNORECASE,
+)
+_INTERNAL_TIMING_JARGON = re.compile(
+    r"\b(?:sinais?\s+(?:di[aá]rios?\s+)?materiais?|"
+    r"transi[cç][aã]o\s+material|eventos?\s+materiais?)\b",
+    re.IGNORECASE,
+)
+_FORECAST_WINDOW_AS_OBSERVED = re.compile(
+    r"\b(?:p[eê]ntada|janela)\s+anterior\b[^.;!?]{0,100}\bobservad\w*\b|"
+    r"\bobservad\w*\b[^.;!?]{0,100}\b(?:p[eê]ntada|janela)\s+anterior\b",
+    re.IGNORECASE,
+)
+_VAGUE_DEMONSTRATIVE_SUBJECT = re.compile(
+    r"(?:^|[.!?]\s+)(?:Esse\s+(?:mecanismo|padr[aã]o)|Essa\s+evolu[cç][aã]o)\b",
+    re.IGNORECASE,
+)
+_ABSTRACT_EVENT_TRANSITION = re.compile(
+    r"\btransi[cç][aã]o\s+de\s+(?:eventos?|epis[oó]dios?|padr[oõ]es?)\b"
+    r"[^.;!?]{0,100}\bpara\s+(?:eventos?|epis[oó]dios?|padr[oõ]es?)\b",
     re.IGNORECASE,
 )
 
@@ -541,11 +567,6 @@ def _normalize_internal_forecast_language(text: str) -> str:
         flags=re.IGNORECASE,
     )
     normalized = re.sub(
-        r"\bPermanece\s+sem\s+transição\s+material\s+(?=n[oa]s?\s)",
-        "Não há transição material ",
-        normalized,
-    )
-    normalized = re.sub(
         r",?\s*(?:limitad[ao]|condicionad[ao])\s+(?:pela|por|à)\s+"
         r"[^,.;!?]{0,80}\b(?:método|diagnóstico|atribuição\s+sinótica)\b"
         r"[^,.;!?]*",
@@ -708,6 +729,50 @@ def _available_canonical_names(paragraph: str, packet: AnalysisPacket) -> tuple[
     return tuple(
         name for name in available if re.search(rf"(?<!\w){re.escape(name)}(?!\w)", paragraph)
     )
+
+
+def _validate_geographic_basin_order(
+    paragraph: str,
+    packet: AnalysisPacket,
+) -> None:
+    """Require basin sequences in each sentence to follow the scope order."""
+
+    basin_order = {
+        basin.basin_id: index
+        for index, basin in enumerate(packet.basins)
+    }
+    for sentence in re.split(r"(?<=[.!?])\s+", paragraph):
+        mentions: list[tuple[int, str, str]] = []
+        for basin in packet.basins:
+            for match in re.finditer(
+                rf"(?<!\w){re.escape(basin.name)}(?!\w)",
+                sentence,
+            ):
+                mentions.append(
+                    (match.start(), basin.basin_id, basin.editorial_reference)
+                )
+        mentions.sort()
+        unique_mentions: list[tuple[str, str]] = []
+        seen: set[str] = set()
+        for _position, basin_id, reference in mentions:
+            if basin_id in seen:
+                continue
+            seen.add(basin_id)
+            unique_mentions.append((basin_id, reference))
+        if len(unique_mentions) < 2:
+            continue
+        expected = sorted(
+            unique_mentions,
+            key=lambda item: basin_order[item[0]],
+        )
+        if unique_mentions != expected:
+            found_refs = "; ".join(item[1] for item in unique_mentions)
+            expected_refs = "; ".join(item[1] for item in expected)
+            raise SummaryValidationError(
+                "basin_geographic_order",
+                "basin mentions in each sentence must follow the south-to-north "
+                f"basin_geographic_order; found: {found_refs}; expected: {expected_refs}",
+            )
 
 
 def _paragraph_mm_values(paragraph: str) -> tuple[float, ...]:
@@ -977,6 +1042,27 @@ def _validate_plain_prose(paragraph: str) -> None:
             "reader_quality_metadata_not_allowed",
             "internal operational quality metadata must not appear in reader prose",
         )
+    timing_jargon = _INTERNAL_TIMING_JARGON.search(paragraph)
+    if timing_jargon:
+        raise SummaryValidationError(
+            "internal_timing_jargon_not_allowed",
+            "replace internal material-signal terminology with a concrete description of when and where rain occurs",
+        )
+    if _FORECAST_WINDOW_AS_OBSERVED.search(paragraph):
+        raise SummaryValidationError(
+            "forecast_window_called_observed",
+            "a previous forecast window must not be described as observed weather",
+        )
+    if _VAGUE_DEMONSTRATIVE_SUBJECT.search(paragraph):
+        raise SummaryValidationError(
+            "vague_demonstrative_reference",
+            "name the concrete mechanism or weather variable instead of starting with a vague demonstrative reference",
+        )
+    if _ABSTRACT_EVENT_TRANSITION.search(paragraph):
+        raise SummaryValidationError(
+            "abstract_event_transition",
+            "describe the concrete rain change, region and timing instead of an abstract transition between events or patterns",
+        )
     hydrological_claim = _UNSUPPORTED_HYDROLOGICAL_OUTCOME.search(paragraph)
     if hydrological_claim:
         raise SummaryValidationError(
@@ -1051,6 +1137,14 @@ def _validate_synoptic_evidence(
     window_id: WindowId,
 ) -> None:
     diagnostic = getattr(packet.synoptic_diagnostics, window_id.value)
+    generic_cause = _UNSUPPORTED_GENERIC_SYNOPTIC_CAUSE.search(paragraph)
+    if generic_cause:
+        raise SummaryValidationError(
+            "unsupported_generic_synoptic_cause",
+            "generic causal wording is not an authorized synoptic mechanism: "
+            f"{generic_cause.group(0)!r}; use an exact named supported feature or, "
+            "when none exists, describe only the rain distribution and evolution",
+        )
     supported = {
         canonical
         for feature in (
@@ -1346,6 +1440,7 @@ def _validate_section(
             "available_basin_missing",
             "each section must name at least one canonical basin with operational geometry",
         )
+    _validate_geographic_basin_order(paragraph, packet)
     mm_values = _paragraph_mm_values(paragraph)
     if not mm_values:
         raise SummaryValidationError(

@@ -32,6 +32,7 @@ SUMMARY_DISCLAIMER = (
     "devem ser interpretadas com cautela; também podem ser atualizadas conforme "
     "novas rodadas dos modelos forem disponibilizadas."
 )
+MAX_WINDOW_REPAIR_PASSES = 2
 
 
 class EditorialGenerationError(RuntimeError):
@@ -169,54 +170,70 @@ def generate_validated_summary(
                 }
                 validation_errors.append(invalid)
                 window_audit["validation"] = {"status": "failed", **invalid}
-                try:
-                    repaired = client.repair_window(
-                        packet,
-                        window_id=window_id,
-                        invalid_text=normalized,
-                        validation_error_code=exc.code,
-                        validation_error_message=exc.message,
-                        audit_metadata={
-                            "run_id": str(run_id),
-                            "editorial_attempt": str(attempt_number),
-                        },
-                        prior_sections=tuple(sections),
-                    )
-                except (AttributeError, WeatherSummaryGenerationError) as repair_exc:
-                    window_audit["repair"] = {
-                        "status": "request_failed",
-                        "error_type": type(repair_exc).__name__,
-                        "error": str(repair_exc),
+                repairs: list[dict[str, Any]] = []
+                invalid_text = normalized
+                validation_exc = exc
+                section = None
+                for repair_pass in range(1, MAX_WINDOW_REPAIR_PASSES + 1):
+                    try:
+                        repaired = client.repair_window(
+                            packet,
+                            window_id=window_id,
+                            invalid_text=invalid_text,
+                            validation_error_code=validation_exc.code,
+                            validation_error_message=validation_exc.message,
+                            audit_metadata={
+                                "run_id": str(run_id),
+                                "editorial_attempt": str(attempt_number),
+                                "repair_pass": str(repair_pass),
+                            },
+                            prior_sections=tuple(sections),
+                        )
+                    except (AttributeError, WeatherSummaryGenerationError) as repair_exc:
+                        repairs.append(
+                            {
+                                "repair_pass": repair_pass,
+                                "status": "request_failed",
+                                "error_type": type(repair_exc).__name__,
+                                "error": str(repair_exc),
+                            }
+                        )
+                        break
+                    repaired_text = _normalize_window(repaired.text, packet, window_id)
+                    repair_audit = {
+                        "repair_pass": repair_pass,
+                        **_result_audit(repaired),
+                        "normalized_text": repaired_text,
                     }
+                    try:
+                        section = validate_window_output(repaired_text, packet, window_id)
+                    except SummaryValidationError as repair_exc:
+                        repair_error = {
+                            "attempt": attempt_number,
+                            "window_id": window_id.value,
+                            "response_id": repaired.response_id,
+                            "code": repair_exc.code,
+                            "message": repair_exc.message,
+                            "candidate_text": repaired_text,
+                        }
+                        validation_errors.append(repair_error)
+                        repair_audit["validation"] = {
+                            "status": "failed",
+                            **repair_error,
+                        }
+                        repairs.append(repair_audit)
+                        invalid_text = repaired_text
+                        validation_exc = repair_exc
+                        continue
+                    repair_audit["validation"] = {"status": "accepted"}
+                    repairs.append(repair_audit)
+                    response_id = repaired.response_id
+                    break
+                window_audit["repairs"] = repairs
+                if section is None:
                     attempt.setdefault("windows", []).append(window_audit)
                     failed = True
                     break
-                repaired_text = _normalize_window(repaired.text, packet, window_id)
-                window_audit["repair"] = {
-                    **_result_audit(repaired),
-                    "normalized_text": repaired_text,
-                }
-                try:
-                    section = validate_window_output(repaired_text, packet, window_id)
-                except SummaryValidationError as repair_exc:
-                    repair_error = {
-                        "attempt": attempt_number,
-                        "window_id": window_id.value,
-                        "response_id": repaired.response_id,
-                        "code": repair_exc.code,
-                        "message": repair_exc.message,
-                        "candidate_text": repaired_text,
-                    }
-                    validation_errors.append(repair_error)
-                    window_audit["repair"]["validation"] = {
-                        "status": "failed",
-                        **repair_error,
-                    }
-                    attempt.setdefault("windows", []).append(window_audit)
-                    failed = True
-                    break
-                window_audit["repair"]["validation"] = {"status": "accepted"}
-                response_id = repaired.response_id
             else:
                 window_audit["validation"] = {"status": "accepted"}
                 response_id = generated.response_id
@@ -247,7 +264,7 @@ def generate_validated_summary(
             attempts.append(attempt)
             continue
         attempt["status"] = "validated_with_window_repairs" if any(
-            "repair" in window for window in attempt["windows"]
+            "repairs" in window for window in attempt["windows"]
         ) else "validated"
 
         published_text = _with_summary_disclaimer(validated.text)
@@ -255,9 +272,9 @@ def generate_validated_summary(
         attempt["output_sha256"] = published_sha256
         attempts.append(attempt)
         metadata = {
-            "schema_version": "weather-summary-generation.v2",
+            "schema_version": "weather-summary-generation.v3",
             "prompt_version": PROMPT_VERSION,
-            "generation_mode": "sequential_window_validation_with_scoped_repair",
+            "generation_mode": "sequential_window_validation_with_iterative_scoped_repair",
             "attempts": attempts,
             "final_response_id": response_id,
             "validated_sections": [
@@ -278,7 +295,7 @@ def generate_validated_summary(
         )
 
     metadata = {
-        "schema_version": "weather-summary-generation.v2",
+        "schema_version": "weather-summary-generation.v3",
         "prompt_version": PROMPT_VERSION,
         "attempts": attempts,
         "validation_errors": validation_errors,

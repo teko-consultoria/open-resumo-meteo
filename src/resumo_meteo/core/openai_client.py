@@ -19,17 +19,17 @@ from pydantic import Field
 
 from .schema import AnalysisPacket, StrictModel, WindowId
 
-PROMPT_VERSION = "weather-summary-editorial-v28"
+PROMPT_VERSION = "weather-summary-editorial-v31"
 PROMPT_BUNDLE = {
-    "window_system": "system_window_v16.txt",
+    "window_system": "system_window_v19.txt",
     "window_execution": "execution_window_v9.txt",
-    "window_repair_system": "system_repair_window_v2.txt",
+    "window_repair_system": "system_repair_window_v5.txt",
     "window_repair_execution": "execution_repair_window_v1.txt",
 }
 PROMPT_BUNDLE_SHA256 = {
-    "window_system": "ef8fd288cf76d3b2660bbdf8f4f8fe00d48f06a19ae9fde072a2351ae28886a8",
+    "window_system": "6b1a7fbf1c73d890bfb3eb223ee8097d60a034075a3de4e4c66d76f0113624da",
     "window_execution": "b304e62c22ab9b1d5e1d557fa4d2193b8a0362d42308159cef6589ad00d1e615",
-    "window_repair_system": "0570e40d2f9e1c3098b6727aa0ffd6f5c08a8246e3949592228fa3e383c7dd46",
+    "window_repair_system": "d86a3531926e3d7b7a324964ac34ad609e8709fd9fd182425a8954d125189d58",
     "window_repair_execution": "dbc9993a505e63065cbeb54fce0bcee5cf40878204c352caa6c52219879dd3a3",
 }
 DEFAULT_MODEL = "sabia-4"
@@ -123,7 +123,10 @@ def authorized_basin_accumulations(
 
     selected = WindowId(window_id)
     window_values: list[dict[str, object]] = []
-    for rank, basin, basin_window in _selected_basin_windows(packet, selected):
+    for rank, basin, basin_window in _geographic_selected_basin_windows(
+        packet,
+        selected,
+    ):
         opinion = basin_window.opinion
         item: dict[str, object] = {
             "rank": rank,
@@ -153,9 +156,18 @@ def authorized_rain_literal(packet: AnalysisPacket, window_id: WindowId | str) -
 
 def _section_role(window_id: WindowId) -> str:
     return {
-        WindowId.P1: "apresente a configuração inicial e o principal gatilho do período",
-        WindowId.P2: "destaque a evolução ou transição em relação à primeira pêntada",
-        WindowId.P3: "feche com a tendência de persistência, retorno ou mudança do padrão",
+        WindowId.P1: (
+            "apresente a configuração inicial e explique o mecanismo somente "
+            "quando synoptic_brief.p1.mechanism_policy o autorizar"
+        ),
+        WindowId.P2: (
+            "descreva primeiro a segunda pêntada; compare com a primeira somente "
+            "se a diferença for explícita e puder ser dita em frase curta e separada"
+        ),
+        WindowId.P3: (
+            "descreva primeiro a terceira pêntada e feche com uma tendência concreta "
+            "de persistência, retorno ou mudança da chuva"
+        ),
     }[window_id]
 
 
@@ -398,6 +410,23 @@ def _selected_basin_windows(
     ]
 
 
+def _geographic_selected_basin_windows(
+    packet: AnalysisPacket,
+    window_id: WindowId,
+) -> list[tuple[int, Any, Any]]:
+    """Present the meteorological shortlist in the scope's geographic order."""
+
+    selected_by_id = {
+        basin.basin_id: (rank, basin, basin_window)
+        for rank, basin, basin_window in _selected_basin_windows(packet, window_id)
+    }
+    return [
+        selected_by_id[basin.basin_id]
+        for basin in packet.basins
+        if basin.basin_id in selected_by_id
+    ]
+
+
 def _compact_basin_highlight(rank: int, basin: Any, basin_window: Any) -> dict[str, object]:
     flags = []
     if basin_window.families.agreement.value in {"low", "not_available"}:
@@ -520,6 +549,12 @@ def _compact_basin_highlight(rank: int, basin: Any, basin_window: Any) -> dict[s
 
 def _compact_synoptic_window(value: Any) -> dict[str, object]:
     supported_features = list(value.supported_features)[:6]
+    structured_features = list(value.structured_features)
+    mechanism_policy = (
+        "named_supported_features_only"
+        if supported_features or structured_features
+        else "omit"
+    )
     dominant_pattern = (
         value.dominant_pattern
         if supported_features
@@ -527,6 +562,7 @@ def _compact_synoptic_window(value: Any) -> dict[str, object]:
     )
     return {
         "dominant_pattern": dominant_pattern,
+        "mechanism_policy": mechanism_policy,
         "supported_features": supported_features,
         "structured_features": [
             {
@@ -546,7 +582,7 @@ def _compact_synoptic_window(value: Any) -> dict[str, object]:
                 "description": feature.description,
                 "confidence": feature.confidence.value,
             }
-            for feature in value.structured_features
+            for feature in structured_features
         ],
         "temperature_evolution": [
             {
@@ -609,11 +645,10 @@ def _editorial_basins(packet: AnalysisPacket, window_ids: tuple[WindowId, ...]) 
                 wanted_order.append(basin.basin_id)
     limit = MAX_EDITORIAL_BASINS_PER_WINDOW
     wanted = set(wanted_order[:limit])
-    by_id = {basin.basin_id: basin for basin in packet.basins}
     return [
-        by_id[basin_id]
-        for basin_id in wanted_order[:limit]
-        if basin_id in wanted and basin_id in by_id
+        basin
+        for basin in packet.basins
+        if basin.basin_id in wanted
     ]
 
 
@@ -743,7 +778,7 @@ def _compact_confidence_summary(
 ) -> dict[str, object]:
     summary: dict[str, object] = {}
     for selected in window_ids:
-        selected_rows = _selected_basin_windows(packet, selected)
+        selected_rows = _geographic_selected_basin_windows(packet, selected)
         confidences = [
             basin_window.opinion.confidence.value
             for _rank, _basin, basin_window in selected_rows
@@ -800,7 +835,7 @@ def compact_editorial_packet(
     window_ids = (selected_window_id,)
     synoptic_sequence = _compact_synoptic_sequence(packet)
     return {
-        "schema_version": "weather-summary-editorial-brief.v8",
+        "schema_version": "weather-summary-editorial-brief.v10",
         "issue": {
             "date": packet.issue.date.isoformat(),
             "time": packet.issue.time.isoformat(timespec="minutes"),
@@ -816,12 +851,23 @@ def compact_editorial_packet(
             for window in packet.forecast_windows
             if window.id in window_ids
         ],
+        "basin_geographic_order": [
+            {
+                "basin_id": basin.basin_id,
+                "ref": basin.editorial_reference,
+            }
+            for _rank, basin, _basin_window in _geographic_selected_basin_windows(
+                packet,
+                selected_window_id,
+            )
+        ],
         "basin_highlights": {
             selected.value: [
                 _compact_basin_highlight(rank, basin, basin_window)
-                for rank, basin, basin_window in _selected_basin_windows(packet, selected)[
-                    :MAX_EDITORIAL_BASINS_PER_WINDOW
-                ]
+                for rank, basin, basin_window in _geographic_selected_basin_windows(
+                    packet,
+                    selected,
+                )[:MAX_EDITORIAL_BASINS_PER_WINDOW]
             ]
             for selected in window_ids
         },

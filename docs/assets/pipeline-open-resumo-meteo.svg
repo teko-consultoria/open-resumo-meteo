@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Pipeline do Open Resumo Meteo</title>
+  <desc id="description">Fluxo auditável da ingestão meteorológica à validação e publicação do resumo.</desc>
+  <desc id="desc">Fluxo dos dados meteorológicos até um resumo validado e auditável.</desc>
+
+  <defs>
+    <linearGradient id="header-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2e6ce6"/>
+      <stop offset="1" stop-color="#138a86"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#10243e" flood-opacity=".09"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2e6ce6"/>
+    </marker>
+    <style>
+      .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .eyebrow { font-size: 17px; font-weight: 700; letter-spacing: 2.6px; fill: #2e6ce6; }
+      .title { font-size: 58px; font-weight: 720; letter-spacing: -1.8px; fill: #10243e; }
+      .subtitle { font-size: 22px; font-weight: 450; fill: #66758a; }
+      .step { font-size: 16px; font-weight: 750; letter-spacing: 1.7px; fill: #10243e; }
+      .body { font-size: 18px; font-weight: 450; fill: #40516a; }
+      .small { font-size: 15px; font-weight: 520; fill: #66758a; }
+      .chip { font-size: 16px; font-weight: 650; fill: #10243e; }
+      .number { font-size: 20px; font-weight: 760; fill: #ffffff; text-anchor: middle; dominant-baseline: middle; }
+      .output-title { font-size: 18px; font-weight: 740; letter-spacing: 1.5px; fill: #ffffff; }
+      .output-main { font-size: 27px; font-weight: 720; fill: #ffffff; }
+      .output-text { font-size: 16px; font-weight: 470; fill: #dbe7ff; }
+      .footer { font-size: 22px; font-weight: 620; fill: #10243e; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1000" fill="#f7f9fc"/>
+  <rect x="0" y="0" width="18" height="1000" fill="url(#header-accent)"/>
+
+  <g class="sans">
+    <text x="88" y="72" class="eyebrow">OPEN SOURCE  •  METEOROLOGIA  •  BRASIL</text>
+    <text x="88" y="140" class="title">Do dado meteorológico</text>
+    <text x="88" y="205" class="title">ao resumo auditável</text>
+    <text x="90" y="249" class="subtitle">Um pipeline rastreável, com a LLM restrita à etapa editorial.</text>
+
+    <g transform="translate(1450 70)">
+      <rect width="262" height="48" rx="24" fill="#e7eefc"/>
+      <circle cx="25" cy="24" r="7" fill="#2e6ce6"/>
+      <text x="45" y="31" class="chip">open-resumo-meteo</text>
+    </g>
+
+    <!-- Main process line -->
+    <path d="M155 454 H1488" fill="none" stroke="#c8d3e3" stroke-width="5" stroke-linecap="round"/>
+    <path d="M155 454 H1488" fill="none" stroke="#2e6ce6" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+    <!-- Step 1 -->
+    <g transform="translate(155 454)">
+      <circle r="31" fill="#2e6ce6"/>
+      <text class="number" y="1">1</text>
+    </g>
+    <text x="105" y="523" class="step">INGESTÃO</text>
+    <text x="105" y="558" class="body">Rodadas 00Z</text>
+    <text x="105" y="587" class="body">+ realizado IMERG</text>
+
+    <!-- Sources -->
+    <g filter="url(#soft-shadow)">
+      <rect x="74" y="305" width="164" height="54" rx="13" fill="#ffffff" stroke="#dbe3ef"/>
+      <rect x="250" y="305" width="164" height="54" rx="13" fill="#ffffff" stroke="#dbe3ef"/>
+      <rect x="74" y="371" width="164" height="54" rx="13" fill="#ffffff" stroke="#dbe3ef"/>
+      <rect x="250" y="371" width="164" height="54" rx="13" fill="#ffffff" stroke="#dbe3ef"/>
+    </g>
+    <circle cx="99" cy="332" r="8" fill="#2e6ce6"/>
+    <circle cx="275" cy="332" r="8" fill="#2e6ce6"/>
+    <circle cx="99" cy="398" r="8" fill="#138a86"/>
+    <circle cx="275" cy="398" r="8" fill="#e7a63b"/>
+    <text x="116" y="338" class="chip">GFS + GEFS</text>
+    <text x="292" y="338" class="chip">IFS + ENS</text>
+    <text x="116" y="404" class="chip">IMERG · realizado</text>
+    <text x="292" y="404" class="chip">MERGE · clima</text>
+
+    <!-- Step 2 -->
+    <g transform="translate(460 454)">
+      <circle r="31" fill="#138a86"/>
+      <text class="number" y="1">2</text>
+    </g>
+    <text x="410" y="523" class="step">BACIAS</text>
+    <text x="410" y="558" class="body">Média ponderada</text>
+    <text x="410" y="587" class="body">pela área</text>
+    <g transform="translate(418 626)">
+      <path d="M0 24 L22 3 L52 10 L70 0 L95 21 L86 52 L59 61 L31 52 L8 61 Z" fill="#d9f0ef" stroke="#138a86" stroke-width="2"/>
+      <path d="M22 3 L31 52 M52 10 L59 61 M0 24 L86 52 M70 0 L31 52" fill="none" stroke="#138a86" stroke-width="1.5" opacity=".75"/>
+    </g>
+    <text x="410" y="722" class="small">Mesmo contorno para</text>
+    <text x="410" y="746" class="small">previsão e observado</text>
+
+    <!-- Step 3 -->
+    <g transform="translate(750 454)">
+      <circle r="31" fill="#2e6ce6"/>
+      <text class="number" y="1">3</text>
+    </g>
+    <text x="700" y="523" class="step">ANÁLISE</text>
+    <text x="700" y="558" class="body">Chuva e ensembles</text>
+    <text x="700" y="587" class="body">Diagnóstico sinótico</text>
+    <g transform="translate(706 627)">
+      <rect x="0" y="49" width="13" height="28" rx="3" fill="#9cb9f4"/>
+      <rect x="22" y="32" width="13" height="45" rx="3" fill="#6f99ed"/>
+      <rect x="44" y="12" width="13" height="65" rx="3" fill="#2e6ce6"/>
+      <path d="M84 70 C100 20 119 20 137 70" fill="none" stroke="#138a86" stroke-width="4"/>
+      <path d="M84 70 C105 43 120 43 145 70" fill="none" stroke="#77b8b4" stroke-width="3"/>
+      <path d="M167 15 C185 8 199 15 206 31 C191 34 180 43 175 58 C163 48 158 32 167 15 Z" fill="#e9f0fd" stroke="#2e6ce6" stroke-width="2"/>
+      <path d="M174 48 C186 35 196 31 211 30" fill="none" stroke="#2e6ce6" stroke-width="2" marker-end="url(#arrow)"/>
+    </g>
+    <text x="700" y="733" class="small">Consenso entre famílias</text>
+    <text x="700" y="757" class="small">e evidência estruturada</text>
+
+    <!-- Step 4 -->
+    <g transform="translate(1045 454)">
+      <circle r="31" fill="#10243e"/>
+      <text class="number" y="1">4</text>
+    </g>
+    <text x="995" y="523" class="step">PACOTE</text>
+    <text x="995" y="558" class="body">Brief por janela</text>
+    <text x="995" y="587" class="body">Valores autorizados</text>
+    <g transform="translate(997 627)">
+      <rect width="165" height="112" rx="12" fill="#ffffff" stroke="#bdcce3" stroke-width="2"/>
+      <rect x="18" y="20" width="47" height="13" rx="4" fill="#2e6ce6"/>
+      <rect x="18" y="45" width="128" height="7" rx="3.5" fill="#d3dceb"/>
+      <rect x="18" y="62" width="110" height="7" rx="3.5" fill="#d3dceb"/>
+      <rect x="18" y="79" width="73" height="7" rx="3.5" fill="#d3dceb"/>
+      <text x="106" y="96" class="small" fill="#138a86">{ JSON }</text>
+    </g>
+
+    <!-- Step 5 -->
+    <g transform="translate(1292 454)">
+      <circle r="31" fill="#e7a63b"/>
+      <text class="number" y="1">5</text>
+    </g>
+    <text x="1242" y="523" class="step">REDAÇÃO</text>
+    <text x="1242" y="558" class="body">LLM + prompt</text>
+    <text x="1242" y="587" class="body">editorial</text>
+    <g transform="translate(1254 628)">
+      <path d="M0 0 H93 L126 33 V113 H0 Z" fill="#ffffff" stroke="#d2b064" stroke-width="2"/>
+      <path d="M93 0 V33 H126" fill="#faefd7" stroke="#d2b064" stroke-width="2"/>
+      <text x="18" y="52" style="font: 700 28px Georgia, serif; fill:#10243e">T</text>
+      <rect x="51" y="33" width="54" height="7" rx="3.5" fill="#d8dee8"/>
+      <rect x="18" y="68" width="87" height="7" rx="3.5" fill="#d8dee8"/>
+      <rect x="18" y="86" width="72" height="7" rx="3.5" fill="#d8dee8"/>
+    </g>
+    <path d="M1378 745 C1436 787 1436 648 1386 682" fill="none" stroke="#e7a63b" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="1241" y="779" class="small">Reparo só da seção</text>
+
+    <!-- Output -->
+    <g transform="translate(1485 332)" filter="url(#soft-shadow)">
+      <rect width="253" height="430" rx="28" fill="#10243e"/>
+      <text x="30" y="54" class="output-title">VALIDAÇÃO</text>
+      <text x="30" y="86" class="output-title">E PUBLICAÇÃO</text>
+      <line x1="30" y1="111" x2="223" y2="111" stroke="#405675"/>
+      <circle cx="43" cy="148" r="13" fill="#138a86"/>
+      <path d="M36 148 L41 153 L50 142" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="155" class="output-text">Regras determinísticas</text>
+      <circle cx="43" cy="188" r="13" fill="#138a86"/>
+      <path d="M36 188 L41 193 L50 182" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="195" class="output-text">Evidência e linguagem</text>
+      <circle cx="43" cy="228" r="13" fill="#138a86"/>
+      <path d="M36 228 L41 233 L50 222" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="66" y="235" class="output-text">Valores e estrutura</text>
+      <line x1="30" y1="263" x2="223" y2="263" stroke="#405675"/>
+      <text x="30" y="304" class="output-main">Resumo 5 + 5 + 4</text>
+      <text x="30" y="335" class="output-text">três janelas de previsão</text>
+      <rect x="30" y="362" width="193" height="2" fill="#405675"/>
+      <text x="30" y="397" class="output-text">Texto • manifests • hashes</text>
+    </g>
+
+    <!-- Footer principle -->
+    <rect x="74" y="852" width="1664" height="86" rx="18" fill="#ffffff" stroke="#dbe3ef"/>
+    <rect x="74" y="852" width="10" height="86" rx="5" fill="url(#header-accent)"/>
+    <text x="117" y="906" class="footer">A LLM redige. Os números, as evidências e as regras são definidos antes.</text>
+    <text x="1436" y="906" class="small">pipeline auditável</text>
+  </g>
+</svg>

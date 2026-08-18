@@ -24,7 +24,7 @@ def _publication_kwargs(output_root: Path) -> dict:
         "generation_metadata": {"response_id": "response-1"},
         "validation_errors": [{"code": "first_draft_invalid"}],
         "schema_version": "2",
-        "prompt_version": "weather-summary-editorial-v28",
+        "prompt_version": "weather-summary-editorial-v31",
     }
 
 
@@ -54,7 +54,7 @@ def test_publish_writes_immutable_audit_layout_and_matching_checksums(tmp_path: 
         "cycle": "00",
         "files": manifest["files"],
         "issue_date": "2026-07-13",
-        "prompt_version": "weather-summary-editorial-v28",
+        "prompt_version": "weather-summary-editorial-v31",
         "run_id": "run-safe_01",
         "schema_version": "weather-summary-publication.v2",
     }

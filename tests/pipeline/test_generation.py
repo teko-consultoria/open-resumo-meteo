@@ -39,7 +39,7 @@ class FakeEditorialClient:
         self,
         *,
         window_outputs: dict[WindowId, str],
-        window_repair_outputs: dict[WindowId, str] | None = None,
+        window_repair_outputs: dict[WindowId, str | list[str]] | None = None,
     ) -> None:
         self.window_outputs = window_outputs
         self.window_repair_outputs = window_repair_outputs or {}
@@ -95,7 +95,14 @@ class FakeEditorialClient:
         )
         if selected not in self.window_repair_outputs:
             raise AssertionError("repair_window não deveria ter sido chamado")
-        return self._result(self.window_repair_outputs[selected], window_id=f"repair-{selected.value}")
+        configured = self.window_repair_outputs[selected]
+        if isinstance(configured, list):
+            if not configured:
+                raise AssertionError("não há reparo configurado para esta passagem")
+            text = configured.pop(0)
+        else:
+            text = configured
+        return self._result(text, window_id=f"repair-{selected.value}")
 
 
 def test_generation_uses_exactly_one_call_per_window_and_three_sections() -> None:
@@ -115,7 +122,8 @@ def test_generation_uses_exactly_one_call_per_window_and_three_sections() -> Non
     assert result.text.count("ª pêntada (") == 3
     assert result.text.splitlines()[0].startswith("1ª pêntada")
     assert result.text.splitlines()[-1] == SUMMARY_DISCLAIMER
-    assert result.metadata["generation_mode"] == "sequential_window_validation_with_scoped_repair"
+    assert result.metadata["schema_version"] == "weather-summary-generation.v3"
+    assert result.metadata["generation_mode"] == "sequential_window_validation_with_iterative_scoped_repair"
     assert result.metadata["attempts"][0]["status"] == "validated"
     assert len(result.metadata["validated_sections"]) == 3
     assert result.metadata["publication_disclaimer"] == {
@@ -156,14 +164,43 @@ def test_invalid_window_is_repaired_without_rewriting_approved_sections() -> Non
 
     audit = result.metadata["attempts"][0]
     assert audit["status"] == "validated_with_window_repairs"
-    assert audit["windows"][1]["repair"]["text"] == _sections()[WindowId.P2]
-    assert audit["windows"][1]["repair"]["validation"]["status"] == "accepted"
+    assert audit["windows"][1]["repairs"][0]["text"] == _sections()[WindowId.P2]
+    assert audit["windows"][1]["repairs"][0]["validation"]["status"] == "accepted"
     assert result.validation_errors[0]["candidate_text"] == rejected
     assert result.validation_errors[0]["code"] == "incomplete_sentence_ending"
     assert result.validation_errors[0]["message"]
 
 
-def test_exhausted_repair_retains_both_rejected_texts_and_reasons_in_error_metadata() -> None:
+def test_second_scoped_repair_can_fix_an_error_introduced_by_first_repair() -> None:
+    packet = _load_packet()
+    outputs = _sections()
+    outputs[WindowId.P2] = "2ª pêntada (15/07 a 20/07):\nrascunho rejeitado"
+    first_repair = _sections()[WindowId.P2].replace(
+        "A tendência é de enfraquecimento do sistema",
+        "Esse padrão perde força",
+        1,
+    )
+    client = FakeEditorialClient(
+        window_outputs=outputs,
+        window_repair_outputs={
+            WindowId.P2: [first_repair, _sections()[WindowId.P2]],
+        },
+    )
+
+    result = generate_validated_summary(
+        packet,
+        run_id="run-two-repairs",
+        client=client,
+        max_attempts=1,
+    )
+
+    repairs = result.metadata["attempts"][0]["windows"][1]["repairs"]
+    assert [item["validation"]["status"] for item in repairs] == ["failed", "accepted"]
+    assert [call["audit_metadata"]["repair_pass"] for call in client.repair_calls] == ["1", "2"]
+    assert result.text == PUBLISHED_SUMMARY
+
+
+def test_exhausted_repair_retains_all_rejected_texts_and_reasons_in_error_metadata() -> None:
     packet = _load_packet()
     rejected_by_window = {window_id: "saída sem a estrutura obrigatória" for window_id in WindowId}
     client = FakeEditorialClient(
@@ -180,13 +217,16 @@ def test_exhausted_repair_retains_both_rejected_texts_and_reasons_in_error_metad
         )
 
     metadata = raised.value.metadata
-    assert len(metadata["validation_errors"]) == 2
-    initial, repaired = metadata["validation_errors"]
+    assert len(metadata["validation_errors"]) == 3
+    initial, first_repair, second_repair = metadata["validation_errors"]
     assert initial["candidate_text"] == "saída sem a estrutura obrigatória"
     assert initial["code"] == "invalid_structure"
     assert initial["message"]
-    assert repaired["candidate_text"] == "reparo ainda inválido"
-    assert repaired["code"] == "invalid_structure"
-    assert repaired["message"]
-    assert metadata["attempts"][0]["windows"][0]["repair"]["text"] == "reparo ainda inválido"
-    assert metadata["attempts"][0]["windows"][0]["repair"]["validation"]["status"] == "failed"
+    for repaired in (first_repair, second_repair):
+        assert repaired["candidate_text"] == "reparo ainda inválido"
+        assert repaired["code"] == "invalid_structure"
+        assert repaired["message"]
+    repairs = metadata["attempts"][0]["windows"][0]["repairs"]
+    assert len(repairs) == 2
+    assert all(item["text"] == "reparo ainda inválido" for item in repairs)
+    assert all(item["validation"]["status"] == "failed" for item in repairs)

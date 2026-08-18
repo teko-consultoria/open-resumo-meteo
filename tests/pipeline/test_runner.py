@@ -271,10 +271,10 @@ def test_runner_persists_rejected_drafts_and_validator_reasons(
     assert stored.generation_metadata["attempts"][0]["windows"][0]["generated"]["normalized_text"] == (
         "rascunho inválido para p1"
     )
-    assert stored.generation_metadata["attempts"][0]["windows"][0]["repair"]["text"] == (
+    assert stored.generation_metadata["attempts"][0]["windows"][0]["repairs"][0]["text"] == (
         "reparo ainda inválido"
     )
-    assert len(stored.validation_errors) == 2
+    assert len(stored.validation_errors) == 3
     assert {item["code"] for item in stored.validation_errors} == {"invalid_structure"}
     assert stored.validation_errors[-1]["candidate_text"] == "reparo ainda inválido"
     assert stored.error_message

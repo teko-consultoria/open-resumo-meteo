@@ -259,7 +259,14 @@ class OpenAIEditorialClientTests(TestCase):
         self.assertIn("narrativa espacial e temporal", load_window_system_prompt())
         self.assertIn("três a cinco frases", load_window_system_prompt())
         self.assertIn("retorna já no primeiro dia", load_window_system_prompt())
-        self.assertEqual(PROMPT_VERSION, "weather-summary-editorial-v28")
+        self.assertIn("sinal diário material", load_window_system_prompt())
+        self.assertIn("Descreva primeiro o que ocorre", load_window_system_prompt())
+        self.assertIn("basin_geographic_order", load_window_system_prompt())
+        self.assertIn("mechanism_policy", load_window_system_prompt())
+        self.assertIn("circulação em grande escala", load_window_system_prompt())
+        self.assertIn("somente na frase de acumulados", load_window_system_prompt())
+        self.assertIn("sem reordenar nem omitir itens", load_window_system_prompt())
+        self.assertEqual(PROMPT_VERSION, "weather-summary-editorial-v31")
 
     def test_only_current_prompt_bundle_is_distributed(self):
         prompt_directory = WEATHER_SUMMARY_DIR / "prompts"
@@ -280,11 +287,42 @@ class OpenAIEditorialClientTests(TestCase):
         self.assertIn("basin_highlights", compact)
         self.assertIn("synoptic_brief", compact)
         self.assertIn("energy_signals", compact)
+        geographic_ids = [
+            item["basin_id"]
+            for item in compact["basin_geographic_order"]
+        ]
+        scope_positions = {
+            basin_id: index
+            for index, basin_id in enumerate(DEFAULT_SUMMARY_BASIN_SCOPE.basin_ids)
+        }
+        self.assertEqual(
+            geographic_ids,
+            sorted(geographic_ids, key=scope_positions.__getitem__),
+        )
         self.assertNotIn("basins", compact)
         self.assertNotIn("synoptic_diagnostics", compact)
         self.assertNotIn("source_manifest", compact_json)
         self.assertNotIn("audit", compact_json)
         self.assertLess(len(compact_json), 12000)
+
+    def test_compact_brief_requires_omitting_unsupported_causal_mechanisms(self):
+        payload = load_fixture_dict()
+        payload["synoptic_diagnostics"]["p1"]["supported_features"] = []
+        payload["synoptic_diagnostics"]["p1"]["structured_features"] = []
+
+        compact = compact_editorial_packet(
+            AnalysisPacket.model_validate(payload),
+            WindowId.P1,
+        )
+
+        self.assertEqual(
+            compact["synoptic_brief"]["p1"]["mechanism_policy"],
+            "omit",
+        )
+        self.assertEqual(
+            compact["synoptic_brief"]["p1"]["dominant_pattern"],
+            "distribution_and_persistence_only",
+        )
 
     def test_compact_brief_carries_structured_weather_and_model_contrasts(self):
         payload = load_fixture_dict()
@@ -420,7 +458,7 @@ class OpenAIEditorialClientTests(TestCase):
             if item["basin_id"] == "jacui"
         )
 
-        self.assertEqual(compact["schema_version"], "weather-summary-editorial-brief.v8")
+        self.assertEqual(compact["schema_version"], "weather-summary-editorial-brief.v10")
         self.assertEqual(
             evolution["antecedent_to_p1"],
             {
@@ -999,6 +1037,51 @@ class SummaryOutputValidatorTests(TestCase):
             "ambiguous_confidence_language",
         )
 
+    def test_rejects_internal_material_signal_jargon(self):
+        unclear = VALID_OUTPUT.replace(
+            "chuva irregular no Centro-Sul",
+            "sem sinais diários materiais no Centro-Sul",
+            1,
+        )
+
+        self.assert_invalid(unclear, "internal_timing_jargon_not_allowed")
+
+    def test_rejects_forecast_window_described_as_observed(self):
+        unclear = VALID_OUTPUT.replace(
+            "A tendência é de enfraquecimento do sistema",
+            "Eventos observados na pêntada anterior dão lugar ao enfraquecimento do sistema",
+            1,
+        )
+
+        self.assert_invalid(unclear, "forecast_window_called_observed")
+
+    def test_rejects_vague_demonstrative_subject(self):
+        unclear = VALID_OUTPUT.replace(
+            "A tendência é de enfraquecimento do sistema",
+            "Esse mecanismo perde força",
+            1,
+        )
+
+        self.assert_invalid(unclear, "vague_demonstrative_reference")
+
+    def test_rejects_abstract_transition_between_events(self):
+        unclear = VALID_OUTPUT.replace(
+            "A tendência é de enfraquecimento do sistema",
+            "Há transição de eventos concentrados para episódios intermitentes",
+            1,
+        )
+
+        self.assert_invalid(unclear, "abstract_event_transition")
+
+    def test_rejects_basin_sequence_that_leaves_and_returns_to_south(self):
+        out_of_order = VALID_OUTPUT.replace(
+            "25 mm no Uruguai, 30 mm no Iguaçu e 35 mm no Paranapanema",
+            "25 mm no Uruguai, 35 mm no Paranapanema e 30 mm no Iguaçu",
+            1,
+        )
+
+        self.assert_invalid(out_of_order, "basin_geographic_order")
+
     def test_rejects_vague_model_group(self):
         self.assert_invalid(
             VALID_OUTPUT.replace("Os ensembles", "Os sistemas europeus", 1),
@@ -1055,6 +1138,16 @@ class SummaryOutputValidatorTests(TestCase):
                 AnalysisPacket.model_validate(packet),
             )
         self.assertEqual(raised.exception.code, "unsupported_synoptic_mechanism")
+
+    def test_rejects_generic_large_scale_cause_even_when_grammar_is_corrected(self):
+        for wording in (
+            "A persistência de umidade e a circulação no Grande escala favorecem a chuva",
+            "A persistência de umidade e a circulação em grande escala favorecem a chuva",
+        ):
+            invalid = VALID_OUTPUT.replace("Um cavado organiza a chuva", wording, 1)
+
+            with self.subTest(wording=wording):
+                self.assert_invalid(invalid, "unsupported_generic_synoptic_cause")
 
     def test_removes_announcement_that_no_synoptic_mechanism_exists(self):
         paragraph = VALID_OUTPUT.splitlines()[1]
