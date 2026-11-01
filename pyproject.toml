@@ -19,7 +19,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Atmospheric Science",
 ]
 dependencies = [
-  "eccodes==1.7.1",
+  "eccodes==2.50.0",
   "h5py>=3.11,<4.0",
   "numpy>=2.0,<3.0",
   "openai>=2.20,<3.0",
